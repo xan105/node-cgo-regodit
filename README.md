@@ -1,4 +1,4 @@
-A golang dll to access Windows registry.
+A cgo dll to access Windows registry.<br />
 Syntax is inspired from InnoSetup's Pascal Scripting.
 
 Dependencies
@@ -6,7 +6,8 @@ Dependencies
 
 - golang.org/x/sys/windows/registry
 
-Start `dependencies.cmd` or `>_ go get golang.org/x/sys/windows/registry`
+Start `dependencies.cmd` or <br />
+`>_ go get golang.org/x/sys/windows/registry`<br />
 
 `go get` requires git for windows installed and in PATH.
 
@@ -14,10 +15,10 @@ Start `dependencies.cmd` or `>_ go get golang.org/x/sys/windows/registry`
 Build me
 ========
 
-cgo requires a gcc compiler installed and in PATH. 
+cgo requires a gcc compiler installed and in PATH. <br />
 Recommended : http://tdm-gcc.tdragon.net/download
   
-Start `build.cmd` or 
+Start `build.cmd` or <br />
 ```
 >_ go generate
 >_ go build -buildmode=c-shared -o regedit.dll registry_dll
@@ -26,37 +27,37 @@ Start `build.cmd` or
 API
 ===
 
-`RegKeyExists`
+`RegKeyExists`<br />
 (root *C.char, key *C.char) C.uint // 0: false | 1: true
 
-`RegQueryStringValue` // REG_SZ & REG_EXPAND_SZ
+`RegQueryStringValue` // REG_SZ & REG_EXPAND_SZ<br />
 (root *C.char, key *C.char, name *C.char) *C.char
 
-`RegQueryStringValueAndExpand` // REG_EXPAND_SZ (expands environment-variable strings)
+`RegQueryStringValueAndExpand` // REG_EXPAND_SZ (expands environment-variable strings)<br />
 (root *C.char, key *C.char, name *C.char) *C.char
 
-`RegQueryBinaryValue` //REG_BINARY
+`RegQueryBinaryValue` //REG_BINARY<br />
 (root *C.char, key *C.char, name *C.char) *C.char
 
-`RegQueryIntegerValue` //REG_DWORD & REG_QWORD
+`RegQueryIntegerValue` //REG_DWORD & REG_QWORD<br />
 (root *C.char, key *C.char, name *C.char) *C.char
 
-`RegWriteStringValue`
+`RegWriteStringValue`<br />
 (root *C.char, key *C.char, name *C.char, value *C.char)
 
-`RegWriteExpandStringValue`
+`RegWriteExpandStringValue`<br />
 (root *C.char, key *C.char, name *C.char, value *C.char)
 
-`RegWriteBinaryValue`
+`RegWriteBinaryValue`<br />
 (root *C.char, key *C.char, name *C.char, value *C.char)
 
-`RegWriteDwordValue`
+`RegWriteDwordValue`<br />
 (root *C.char, key *C.char, name *C.char, value *C.char)
 
-`RegWriteQwordValue`
+`RegWriteQwordValue`<br />
 (root *C.char, key *C.char, name *C.char, value *C.char) 
 
-`RegDeleteKeyValue`
+`RegDeleteKeyValue`<br />
 (root *C.char, key *C.char, name *C.char)
 
 Example
