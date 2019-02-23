@@ -70,7 +70,7 @@ const ffi = require('ffi-napi');
 const arch = (process.arch === "x64") ? "x64" : "x86";
 
 const regedit = ffi.Library(path.resolve(__dirname, `build/regedit.${arch}.dll`), {
-   'RegKeyExists': ["string", ["string", "string"]],
+   'RegKeyExists': ["int", ["string", "string"]],
    'RegQueryStringValue': ["string", ["string", "string", "string"]],
    'RegQueryStringValueAndExpand': ["string", ["string", "string", "string"]],
    'RegQueryBinaryValue': ["string", ["string", "string", "string"]],
