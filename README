@@ -1,6 +1,6 @@
-Windows Registry in Node.Js using ffi with GoLang c-shared DLL
-This was to demo that you can use GoLang c-shared DLL (Go>=1.10) with ffi 
-Uploading to npm for ease of use 😅.
+Windows Registry in Node.Js using ffi with GoLang c-shared DLL.<br />
+This was to demo that you can use GoLang c-shared DLL (Go>=1.10) with ffi.<br />
+Uploading to npm for ease of use 😅.<br />
 
 Example
 =======
