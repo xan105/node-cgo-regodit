@@ -1,6 +1,6 @@
 {
   "name": "regodit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Access Windows registry via a cgo dll.",
   "main": "regedit.js",
   "scripts": {

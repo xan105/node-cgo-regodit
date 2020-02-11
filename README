@@ -25,3 +25,45 @@ try{
 })().catch(console.error);
 
 ```
+
+API
+===
+
+`RegKeyExists`<br />
+(root, key ) bool
+
+`RegListAllSubkeys`<br />
+(root , key ) array
+
+`RegListAllValues`<br />
+(root , key ) array
+
+`RegQueryValue` // REG_SZ & REG_EXPAND_SZ<br />
+(root , key , name ) string
+
+`RegQueryValueAndExpand` // REG_EXPAND_SZ (expands environment-variable s)<br />
+(root , key , name ) string
+
+`RegQueryBinaryValue` //REG_BINARY<br />
+(root , key , name ) string
+
+`RegQueryIntegerValue` //REG_DWORD & REG_QWORD<br />
+(root , key , name ) string
+
+`RegWriteValue`<br />
+(root , key , name , value )
+
+`RegWriteExpandValue`<br />
+(root , key , name , value )
+
+`RegWriteBinaryValue`<br />
+(root , key , name , value )
+
+`RegWriteDwordValue`<br />
+(root , key , name , value )
+
+`RegWriteQwordValue`<br />
+(root , key , name , value ) 
+
+`RegDeleteKeyValue`<br />
+(root , key , name )
