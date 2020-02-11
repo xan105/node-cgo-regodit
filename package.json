@@ -1,0 +1,30 @@
+{
+  "name": "regodit",
+  "version": "1.0.0",
+  "description": "Access Windows registry via a cgo dll.",
+  "main": "regedit.js",
+  "scripts": {
+    "start": "node regedit.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xan105/go-dll-regedit.git"
+  },
+  "keywords": [
+    "go",
+    "golang",
+    "windows",
+    "registry",
+    "dll",
+    "cgo"
+  ],
+  "author": "Anthony Beaumont",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xan105/go-dll-regedit/issues"
+  },
+  "homepage": "https://github.com/xan105/go-dll-regedit#readme",
+  "dependencies": {
+    "ffi-napi": "^2.4.6"
+  }
+}

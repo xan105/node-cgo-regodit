@@ -1,0 +1,27 @@
+Windows Registry in Node.Js using ffi with GoLang c-shared DLL
+This was to demo that you can use GoLang c-shared DLL (Go>=1.10) with ffi 
+Uploading to npm for ease of use 😅.
+
+Example
+=======
+
+```js
+
+const regedit = require("regodit");
+
+(async()=>{
+try{
+
+  //promise
+  let res = await regedit.promises.RegListAllSubkeys("HKCU","Software/Valve");
+  console.log(res);
+  
+  //sync
+  let res2 = regedit.RegListAllSubkeys("HKCU","Software/Valve");
+  console.log(res2);
+
+
+}catch(err){ throw err }
+})().catch(console.error);
+
+```
