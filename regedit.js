@@ -3,7 +3,7 @@
 const path = require('path');
 const ffi = require('ffi-napi');
 
-const lib = ffi.Library(path.join(__dirname, "build",`${(process.arch === "x64") ? 'regedit.x64.dll' : 'regedit.x86.dll'}`), {
+const lib = ffi.Library(path.join(__dirname, "build/regedit.x64.dll"), {
    'RegKeyExists': ["int", ["string", "string"]],
    'RegListAllSubkeys': ["string", ["string", "string"]],
    'RegListAllValues': ["string", ["string", "string"]],
