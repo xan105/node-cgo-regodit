@@ -12,19 +12,19 @@ import (
 func GetHKEY(root string) registry.Key {
 
 	var HKEY registry.Key
-	
+		
 	if (root == "HKCR"){ 
-    HKEY = registry.CLASSES_ROOT
+		HKEY = registry.CLASSES_ROOT
 	} else if (root == "HKCU") {
-    HKEY = registry.CURRENT_USER
-  }else if (root == "HKLM") {
-  	HKEY = registry.LOCAL_MACHINE
-  }else if (root == "HKU") { 
-  	HKEY = registry.USERS
-  }else if (root == "HKCC") { 
-    HKEY = registry.CURRENT_CONFIG
+		HKEY = registry.CURRENT_USER
+	}else if (root == "HKLM") {
+		HKEY = registry.LOCAL_MACHINE
+	}else if (root == "HKU") { 
+		HKEY = registry.USERS
+	}else if (root == "HKCC") { 
+		HKEY = registry.CURRENT_CONFIG
 	}
-	
+		
 	return HKEY
 
 }
@@ -83,6 +83,35 @@ func RegListAllValues(root *C.char, key *C.char) *C.char {
   
 }
 
+//export RegQueryValueType
+func RegQueryValueType(root *C.char, key *C.char, name *C.char) *C.char {
+
+	var result string
+	var buf []byte;
+	HKEY := GetHKEY(C.GoString(root))
+
+	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
+		 defer k.Close()
+		 _, valtype, _ := k.GetValue(C.GoString(name),buf)
+ 
+	switch valtype {
+		case 0: result = "NONE"
+		case 1: result = "SZ"
+		case 2: result = "EXPAND_SZ"
+		case 3: result = "BINARY"
+		case 4: result = "DWORD"
+		case 5: result = "DWORD_BIG_ENDIAN"
+		case 6: result = "LINK"
+		case 7: result = "MULTI_SZ"
+		case 8: result = "RESOURCE_LIST"
+		case 9: result = "FULL_RESOURCE_DESCRIPTOR"
+		case 10: result = "RESOURCE_REQUIREMENTS_LIST"
+		case 11: result = "QWORD"
+	}
+ 
+	return C.CString(result)
+}
+
 //export RegQueryStringValue
 func RegQueryStringValue(root *C.char, key *C.char, name *C.char) *C.char { // REG_SZ & REG_EXPAND_SZ
 
@@ -139,6 +168,16 @@ func RegQueryIntegerValue(root *C.char, key *C.char, name *C.char) *C.char { //R
   result = strconv.FormatUint(i, 10)
  
 	return C.CString(result)
+
+}
+
+//export RegWriteKey
+func RegWriteKey (root *C.char, key *C.char) {
+
+	HKEY := GetHKEY(C.GoString(root))
+
+  k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
+    defer k.Close()
 
 }
 

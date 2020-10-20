@@ -2,6 +2,8 @@ import regedit from '../lib/esm.mjs'
 
 (async()=>{
 
+	if (Object.keys(regedit.promises).length !== Object.keys(regedit).length - 1) console.error("Promises/Sync method count mismatch");
+
 	let res;
 	
 	res = await regedit.promises.RegKeyExists("HKCU","Software/Valve");

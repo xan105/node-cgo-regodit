@@ -3,10 +3,10 @@
   "version": "1.1.0",
   "description": "Access Windows registry via a cgo dll (ffi-napi)",
   "type": "module",
-  "main": "./lib/regedit.cjs",
+  "main": "./lib/index.cjs",
   "exports": {
     "import": "./lib/esm.mjs",
-    "require": "./lib/regedit.cjs"
+    "require": "./lib/index.cjs"
   },
   "os": [
     "win32"
