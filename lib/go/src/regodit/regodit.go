@@ -2,7 +2,7 @@
 package main
 
 import (
-  "C"
+	"C"
 	"golang.org/x/sys/windows/registry"
 	"encoding/hex"
 	"strconv"

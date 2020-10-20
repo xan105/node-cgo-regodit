@@ -1,97 +1,77 @@
-A cgo dll to access Windows registry.<br />
+Read/Write Windows Registry in Node using ffi-napi with a GoLang c-shared DLL.<br />
+This was to demo that you can use GoLang c-shared DLL (Go>=1.10) with ffi.<br />
 Syntax is inspired from InnoSetup's Pascal Scripting.
 
-Dependencies
-============
+Example
+=======
 
-- golang.org/x/sys/windows/registry
+```js
 
-Start `dependencies.cmd` or <br />
-`>_ go get golang.org/x/sys/windows/registry`<br />
+const regedit = require("regodit"); //commonjs
+import regedit from 'regodit'; //esm
 
-`go get` requires git for windows installed and in PATH.
+(async()=>{
 
-
-Build me
-========
-
-cgo requires a gcc compiler installed and in PATH. <br />
-Recommended : http://tdm-gcc.tdragon.net/download
+  //promise
+  const res = await regedit.promises.RegListAllSubkeys("HKCU","Software/Valve");
+  console.log(res);
   
-Start `build.cmd` or <br />
-```
->_ go generate
->_ go build -buildmode=c-shared -o regedit.dll registry_dll
+  //sync
+  const resSync = regedit.RegListAllSubkeys("HKCU","Software/Valve");
+  console.log(resSync);
+
+})().catch(console.error);
 ```
 
 API
 ===
 
-`RegKeyExists`<br />
-(root *C.char, key *C.char) C.uint // 0: false | 1: true
+_Promise are under the "promises" namespace otherwise sync method_
+eg: 
+	- promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
+	- RegListAllSubkeys("HKCU","Software/Valve") //Sync
 
-`RegListAllSubkeys`<br />
-(root *C.char, key *C.char) *C.char // Comma seperated list
+### RegKeyExists(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) bool
+### RegListAllSubkeys(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null
+### RegListAllValues(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null
+### RegQueryStringValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
+REG_SZ & REG_EXPAND_SZ
+### RegQueryStringValueAndExpand(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
+REG_EXPAND_SZ (expands environment-variables)
+### RegQueryBinaryValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
+REG_BINARY
+### RegQueryIntegerValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
+REG_DWORD & REG_QWORD
+### RegWriteStringValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
+### RegWriteExpandStringValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
+### RegWriteBinaryValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
+### RegWriteDwordValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
+### RegWriteQwordValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
+### RegDeleteKey(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void
+### RegDeleteKeyValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) void
 
-`RegListAllValues`<br />
-(root *C.char, key *C.char) *C.char // Comma seperated list
+Build cgo-dll
+=============
 
-`RegQueryStringValue` // REG_SZ & REG_EXPAND_SZ<br />
-(root *C.char, key *C.char, name *C.char) *C.char
+### Dependencies
 
-`RegQueryStringValueAndExpand` // REG_EXPAND_SZ (expands environment-variable strings)<br />
-(root *C.char, key *C.char, name *C.char) *C.char
+- golang.org/x/sys/windows/registry
 
-`RegQueryBinaryValue` //REG_BINARY<br />
-(root *C.char, key *C.char, name *C.char) *C.char
+Start `lib/go/dependencies.cmd` or <br />
+`>_ go get golang.org/x/sys/windows/registry`<br />
 
-`RegQueryIntegerValue` //REG_DWORD & REG_QWORD<br />
-(root *C.char, key *C.char, name *C.char) *C.char
+`go get` requires git for windows installed and in PATH.
 
-`RegWriteStringValue`<br />
-(root *C.char, key *C.char, name *C.char, value *C.char)
-
-`RegWriteExpandStringValue`<br />
-(root *C.char, key *C.char, name *C.char, value *C.char)
-
-`RegWriteBinaryValue`<br />
-(root *C.char, key *C.char, name *C.char, value *C.char)
-
-`RegWriteDwordValue`<br />
-(root *C.char, key *C.char, name *C.char, value *C.char)
-
-`RegWriteQwordValue`<br />
-(root *C.char, key *C.char, name *C.char, value *C.char) 
-
-`RegDeleteKeyValue`<br />
-(root *C.char, key *C.char, name *C.char)
-
-Example
-=======
-
-Node.js
-```js
-const path = require('path');
-const ffi = require('ffi-napi');
-
-const regedit = ffi.Library(path.resolve(__dirname, "build/regedit.dll"), {
-   'RegKeyExists': ["int", ["string", "string"]],
-   'RegListAllSubkeys': ["string", ["string", "string"]],
-   'RegListAllValues': ["string", ["string", "string"]],
-   'RegQueryStringValue': ["string", ["string", "string", "string"]],
-   'RegQueryStringValueAndExpand': ["string", ["string", "string", "string"]],
-   'RegQueryBinaryValue': ["string", ["string", "string", "string"]],
-   'RegQueryIntegerValue': ["string", ["string", "string", "string"]],
-   'RegWriteStringValue': ["void", ["string", "string", "string", "string"]],
-   'RegWriteExpandStringValue': ["void", ["string", "string", "string", "string"]],
-   'RegWriteBinaryValue': ["void", ["string", "string", "string", "string"]],
-   'RegWriteDwordValue': ["void", ["string", "string", "string", "string"]],
-   'RegWriteQwordValue': ["void", ["string", "string", "string", "string"]],
-   'RegDeleteKey': ["void", ["string", "string"]],
-   'RegDeleteKeyValue': ["void", ["string", "string", "string"]]
-});
-
-let example = regedit.RegQueryStringValue("HKLM","SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Store","PrimaryWebAccountId");
-console.log(example);
-
+cgo requires a gcc compiler installed and in PATH. <br />
+Recommended : http://tdm-gcc.tdragon.net/download
+  
+### Build  
+  
+Start `lib/go/build.cmd` or <br />
+```
+>_ cd src\regodit
+>_ go generate
+>_ cd ..\
+>_ set GOPATH="%~dp0"
+>_ go build -buildmode=c-shared -o build\regodit.dll regodit
 ```

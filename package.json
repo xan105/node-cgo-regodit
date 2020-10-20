@@ -1,14 +1,24 @@
 {
   "name": "regodit",
-  "version": "1.0.1",
-  "description": "Access Windows registry via a cgo dll.",
-  "main": "regedit.js",
-  "scripts": {
-    "start": "node regedit.js"
+  "version": "1.1.0",
+  "description": "Access Windows registry via a cgo dll (ffi-napi)",
+  "type": "module",
+  "main": "./lib/regedit.cjs",
+  "exports": {
+    "import": "./lib/esm.mjs",
+    "require": "./lib/regedit.cjs"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xan105/go-dll-regedit.git"
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "engines": {
+    "node": ">=0.12"
+  },
+  "scripts": {
+    "lint": "npx eslint --ignore-path .gitignore ./**/*.{cjs,mjs}"
   },
   "keywords": [
     "go",
@@ -16,15 +26,27 @@
     "windows",
     "registry",
     "dll",
-    "cgo"
+    "cgo",
+    "ffi"
   ],
-  "author": "Anthony Beaumont",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/xan105/go-dll-regedit/issues"
+  "author": {
+    "name": "Anthony Beaumont",
+    "email": "dev.xan105@outlook.be",
+    "url": "https://xan105.com/"
   },
-  "homepage": "https://github.com/xan105/go-dll-regedit#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xan105/node-cgo-regodit"
+  },
+  "bugs": {
+    "url": "https://github.com/xan105/node-cgo-regodit/issues"
+  },
+  "homepage": "https://github.com/xan105/node-cgo-regodit#readme",
   "dependencies": {
-    "ffi-napi": "^2.4.6"
+    "ffi-napi": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0"
   }
 }

@@ -1,10 +1,4 @@
 .github/
-build/regedit.h
-build/regedit.x86.h
-build/regedit.x64.h
-build/regedit.dll
-pkg/
-src/
-build.cmd
-dependencies.cmd
-README.md
+.eslintrc.json
+lib/go/
+test/
