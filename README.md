@@ -27,9 +27,11 @@ API
 ===
 
 _Promise are under the "promises" namespace otherwise sync method_
+
 eg: 
-	- promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
-	- RegListAllSubkeys("HKCU","Software/Valve") //Sync
+
+- promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
+- RegListAllSubkeys("HKCU","Software/Valve") //Sync
 
 ### RegKeyExists 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) bool`
