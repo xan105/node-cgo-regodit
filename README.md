@@ -31,24 +31,45 @@ eg:
 	- promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
 	- RegListAllSubkeys("HKCU","Software/Valve") //Sync
 
-### RegKeyExists(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) bool
-### RegListAllSubkeys(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null
-### RegListAllValues(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null
-### RegQueryStringValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
-REG_SZ & REG_EXPAND_SZ
-### RegQueryStringValueAndExpand(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
-REG_EXPAND_SZ (expands environment-variables)
-### RegQueryBinaryValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
-REG_BINARY
-### RegQueryIntegerValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null
-REG_DWORD & REG_QWORD
-### RegWriteStringValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
-### RegWriteExpandStringValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
-### RegWriteBinaryValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
-### RegWriteDwordValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
-### RegWriteQwordValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void
-### RegDeleteKey(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void
-### RegDeleteKeyValue(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) void
+### RegKeyExists 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) bool`
+
+### RegListAllSubkeys
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null`
+### RegListAllValues 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null`
+### RegQueryStringValue //REG_SZ & REG_EXPAND_SZ
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+
+### RegQueryStringValueAndExpand //REG_EXPAND_SZ (expands environment-variables)
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+
+### RegQueryBinaryValue //REG_BINARY
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+
+### RegQueryIntegerValue //REG_DWORD & REG_QWORD
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+
+### RegWriteStringValue 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+
+### RegWriteExpandStringValue 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+
+### RegWriteBinaryValue 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+
+### RegWriteDwordValue 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+
+### RegWriteQwordValue 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+
+### RegDeleteKey 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
+
+### RegDeleteKeyValue 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) void`
 
 Build cgo-dll
 =============
@@ -57,7 +78,7 @@ Build cgo-dll
 
 - golang.org/x/sys/windows/registry
 
-Start `lib/go/dependencies.cmd` or <br />
+Run `lib/go/dependencies.cmd` or <br />
 `>_ go get golang.org/x/sys/windows/registry`<br />
 
 `go get` requires git for windows installed and in PATH.
@@ -67,7 +88,7 @@ Recommended : http://tdm-gcc.tdragon.net/download
   
 ### Build  
   
-Start `lib/go/build.cmd` or <br />
+Run `lib/go/build.cmd` or <br />
 ```
 >_ cd src\regodit
 >_ go generate
