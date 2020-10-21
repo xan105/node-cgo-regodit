@@ -21,13 +21,11 @@
     "lint": "npx eslint --ignore-path .gitignore ./**/*.{cjs,mjs}"
   },
   "keywords": [
-    "go",
+	"windows",
+	"registry",
+	"ffi",
     "golang",
-    "windows",
-    "registry",
-    "dll",
-    "cgo",
-    "ffi"
+    "cgo"
   ],
   "author": {
     "name": "Anthony Beaumont",
