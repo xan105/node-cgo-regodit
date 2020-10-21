@@ -234,15 +234,6 @@ func RegWriteQwordValue(root *C.char, key *C.char, name *C.char, value *C.char) 
     k.SetQWordValue(C.GoString(name), i)
 }
 
-//export RegDeleteKey
-func RegDeleteKey (root *C.char, key *C.char) {
-
-  HKEY := GetHKEY(C.GoString(root))
-
-  registry.DeleteKey(HKEY, C.GoString(key)) 
-
-}
-
 //export RegDeleteKeyValue
 func RegDeleteKeyValue (root *C.char, key *C.char, name *C.char) {
 
@@ -251,6 +242,15 @@ func RegDeleteKeyValue (root *C.char, key *C.char, name *C.char) {
   k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.ALL_ACCESS) 
     defer k.Close()
     k.DeleteValue(C.GoString(name))
+
+}
+
+//export RegDeleteKey
+func RegDeleteKey (root *C.char, key *C.char) {
+
+  HKEY := GetHKEY(C.GoString(root))
+
+  registry.DeleteKey(HKEY, C.GoString(key)) 
 
 }
 

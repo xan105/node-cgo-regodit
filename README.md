@@ -48,12 +48,16 @@ If the key exists or not.
 ### RegListAllSubkeys
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null`
 
-List all sub-keys name for a given key (non-recursive).
+List all subkeys name for a given key (non-recursive).
+
+NB: For a more complete listing see RegExportKey below.
 
 ### RegListAllValues 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null`
 
 List all values name for a given key.
+
+NB: For a more complete listing see RegExportKey below.
 
 ### RegQueryValueType
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) 
@@ -86,57 +90,107 @@ NB: REG_QWORD is a 64-bit unsigned integer.
 ### RegWriteKey
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
 
-Create given key whether the key already exists or not.
+Create given key whether the key already exists or not (subkeys are created if necessary).
 
 ### RegWriteStringValue 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
 
-Write string value in given key/valueName as 'REG_SZ'.
+Write string value in given key/valueName as 'REG_SZ' (subkeys are created if necessary).
 
 ### RegWriteExpandStringValue 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
 
-Write string value in given key/valueName as 'REG_EXPAND_SZ'.
+Write string value in given key/valueName as 'REG_EXPAND_SZ' (subkeys are created if necessary).
 
 ### RegWriteBinaryValue 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
 
-Write binary value in given key/valueName as 'REG_BINARY'.
+Write binary value in given key/valueName as 'REG_BINARY' (subkeys are created if necessary).
 
 ### RegWriteDwordValue 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
 
-Write integer value in given key/valueName as 'REG_DWORD'.
+Write integer value in given key/valueName as 'REG_DWORD' (subkeys are created if necessary).
 
 ### RegWriteQwordValue 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
 
-Write integer value in given key/valueName as 'REG_QWORD'.
-
-### RegDeleteKey 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
-
-Delete given key. 
-
-NB: If key has some sub-keys then key will not be deleted.
+Write integer value in given key/valueName as 'REG_QWORD' (subkeys are created if necessary).
 
 ### RegDeleteKeyValue 
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) void`
 
 Delete given key/valueName.
 
+### RegDeleteKey 
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
+
+Delete given key. 
+
+NB: If key has some subkeys then key will not be deleted (see below RegDeleteKeyIncludingSubkeys for this)
+
+### RegDeleteKeyIncludingSubkeys
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
+
+Delete given key and all subkeys.
+
 ### RegExportKey
 `(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, [bool recursive = true]) RegDump{}¹`
 
-List all values with their name, content, type and all subkeys from given key recursively or not (default true).
-Export it in a json-ish object (see ¹RegDump).
+List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
+Export it in an object representation (see ¹RegDump) where<br/>
+subkeys are treated as nested objects including an additional propriety values containing values data if any.
+
+Example
+-------
+
+```js
+const regdump = await regedit.promises.RegExportKey("HKCU","Software/Valve/Steam");
+console.log(regdump);
+
+//Console output:
+
+{
+  "values": [ //Values of HKCU/Software/Valve/Steam
+	{"name": "H264HWAccel","type": "DWORD","data": "1"},
+    {"name": "Language","type": "SZ","data": "english"},
+    ... //etc
+   ],
+   "ActiveProcess": { //Subkey ActiveProcess of HKCU/Software/Valve/Steam
+    "values": [ //Values of HKCU/Software/Valve/Steam/ActiveProcess
+      {"name": "SteamClientDll","type": "SZ","data": "C:\\Program Files (x86)\\Steam\\steamclient.dll"},
+      {"name": "SteamClientDll64","type": "SZ","data": "C:\\Program Files (x86)\\Steam\\steamclient64.dll"},
+      ... //etc
+    ]
+   },
+	"Apps": { //Subkey Apps of HKCU/Software/Valve/Steam
+		"values": [], //Values of HKCU/Software/Valve/Steam/Apps (in this case none)
+		"480": { //Subkey 480 of HKCU/Software/Valve/Steam/Apps
+		  "values": [ //Values of HKCU/Software/Valve/Steam/Apps/480
+			{"name": "Name","type": "SZ","data": "Spacewar"}, 
+			... //etc
+		  ]
+		},
+		"550": {
+		  "values": [
+			{"name": "Installed","type": "DWORD","data": "0"},
+			{"name": "Name","type": "SZ","data": "Left 4 Dead 2"},
+			... //etc
+		  ]
+		},
+		... //etc
+	},
+	... //etc
+}
+```
 
 ### RegImportKey
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, RegDump{}¹ data) void
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, RegDump{}¹ data) void`
 
-Import back to the registry a previously exported key (see RegExportKey and ¹RegDump).
+Import back to the registry a previously exported key (see RegExportKey and ¹RegDump).<br/>
 This overwrites existing data if any.
 
+<hr/>
 
 ¹RegDump:
 ```ts
