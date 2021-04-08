@@ -34,6 +34,7 @@ import regedit from '../lib/esm.mjs'
 	console.log(res);
 	
 	const regdump = await regedit.promises.RegExportKey("HKCU","Software/Valve/Steam");
+	console.log(regdump);
 	await regedit.promises.RegImportKey("HKCU","Software/Valve/Steam - Copy",regdump);
 
 	await regedit.promises.RegDeleteKeyIncludingSubkeys("HKCU","Software/Valve/Steam - Copy");

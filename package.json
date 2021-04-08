@@ -1,6 +1,6 @@
 {
   "name": "regodit",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Access Windows registry via a cgo dll (ffi-napi)",
   "type": "module",
   "main": "./lib/index.cjs",
@@ -18,12 +18,13 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "lint": "npx eslint --ignore-path .gitignore ./**/*.{cjs,mjs}"
+    "lint": "npx eslint --ignore-path .gitignore ./**/*.{cjs,mjs}",
+    "build": "call lib\\go\\build.cmd"
   },
   "keywords": [
-	"windows",
-	"registry",
-	"ffi",
+    "windows",
+    "registry",
+    "ffi",
     "golang",
     "cgo"
   ],
@@ -42,7 +43,7 @@
   },
   "homepage": "https://github.com/xan105/node-cgo-regodit#readme",
   "dependencies": {
-    "ffi-napi": "^3.0.1"
+    "ffi-napi": "^4.0.3"
   },
   "devDependencies": {
     "eslint": "^7.6.0"

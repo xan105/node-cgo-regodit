@@ -1,6 +1,6 @@
 Read/Write Windows Registry in Node using ffi-napi with a GoLang c-shared DLL.<br />
 This was to demo that you can use GoLang c-shared DLL (Go>=1.10) with ffi.<br />
-Syntax is inspired from InnoSetup's Pascal Scripting.
+Syntax is inspired from InnoSetup's Pascal Scripting Registry functions.
 
 Example
 =======
@@ -135,11 +135,17 @@ NB: If key has some subkeys then key will not be deleted (see below RegDeleteKey
 Delete given key and all subkeys.
 
 ### RegExportKey
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, [bool recursive = true]) RegDump{}¹`
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, [obj option]) RegDump{}¹`
 
 List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
 Export it in an object representation (see ¹RegDump) where<br/>
 subkeys are treated as nested objects including an additional propriety values containing values data if any.
+
+option ⚙️
+
+|name|type|default|description|
+|recursive|bool|true|List values recursively|
+|absenceError|bool|true|Throw when a key doesn't exist|
 
 Example
 -------
@@ -185,10 +191,15 @@ console.log(regdump);
 ```
 
 ### RegImportKey
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, RegDump{}¹ data) void`
+`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, RegDump{}¹ data, [obj option]) void`
 
 Import back to the registry a previously exported key (see RegExportKey and ¹RegDump).<br/>
 This overwrites existing data if any.
+
+option ⚙️
+
+|name|type|default|description|
+|absenceDelete|bool|false|Delete keys in target that exists outside the dump|
 
 <hr/>
 
@@ -217,11 +228,13 @@ Recommended : http://tdm-gcc.tdragon.net/download
   
 ### Build  
   
-Run `lib/go/build.cmd` or <br />
+Run `lib/go/build.cmd` or `npm run-script build`<br />
+
+Manually: <br />
 ```
 >_ cd src\regodit
 >_ go generate
 >_ cd ..\
 >_ set GOPATH="%~dp0"
->_ go build -buildmode=c-shared -o build\regodit.dll regodit
+>_ go build -buildmode=c-shared -o ..\dist\regodit.dll regodit
 ```
