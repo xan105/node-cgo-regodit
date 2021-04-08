@@ -141,9 +141,10 @@ List all values with their name, content, type and all subkeys from given key re
 Export it in an object representation (see ¹RegDump) where<br/>
 subkeys are treated as nested objects including an additional propriety values containing values data if any.
 
-option ⚙️
+#### option ⚙️
 
 |name|type|default|description|
+|----|----|-------|------------|
 |recursive|bool|true|List values recursively|
 |absenceError|bool|true|Throw when a key doesn't exist|
 
@@ -196,9 +197,10 @@ console.log(regdump);
 Import back to the registry a previously exported key (see RegExportKey and ¹RegDump).<br/>
 This overwrites existing data if any.
 
-option ⚙️
+#### option ⚙️
 
 |name|type|default|description|
+|----|----|-------|-----------|
 |absenceDelete|bool|false|Delete keys in target that exists outside the dump|
 
 <hr/>
