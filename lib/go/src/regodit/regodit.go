@@ -120,7 +120,6 @@ func RegQueryValueType(root *C.char, key *C.char, name *C.char) *C.char {
 		 _, valtype, _ := k.GetValue(C.GoString(name),buf)
  
 	switch valtype {
-		case 0: result = "NONE"
 		case 1: result = "SZ"
 		case 2: result = "EXPAND_SZ"
 		case 3: result = "BINARY"
@@ -132,6 +131,7 @@ func RegQueryValueType(root *C.char, key *C.char, name *C.char) *C.char {
 		case 9: result = "FULL_RESOURCE_DESCRIPTOR"
 		case 10: result = "RESOURCE_REQUIREMENTS_LIST"
 		case 11: result = "QWORD"
+		default: result = "NONE"
 	}
  
 	return C.CString(result)
