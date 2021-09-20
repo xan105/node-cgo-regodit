@@ -51,7 +51,6 @@ func GetHKEY(root string) registry.Key {
 	}
 		
 	return HKEY
-
 }
 
 //export RegKeyExists
@@ -71,7 +70,6 @@ func RegKeyExists(root *C.char, key *C.char) C.uint {
   defer k.Close()
 		 
   return C.uint(result)
-
 }
 
 //export RegListAllSubkeys
@@ -81,14 +79,13 @@ func RegListAllSubkeys(root *C.char, key *C.char) *C.char {
   HKEY := GetHKEY(C.GoString(root))
   
   k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE | registry.ENUMERATE_SUB_KEYS)
-		 defer k.Close()
+	defer k.Close()
   
   list, _ := k.ReadSubKeyNames(-1)
   
   result = strings.Join(list[:], ",")
   
   return C.CString(result)
-  
 }
 
 //export RegListAllValues
@@ -98,14 +95,13 @@ func RegListAllValues(root *C.char, key *C.char) *C.char {
   HKEY := GetHKEY(C.GoString(root))
   
   k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE | registry.ENUMERATE_SUB_KEYS)
-		 defer k.Close()
+	defer k.Close()
   
   list, _ := k.ReadValueNames(-1)
   
   result = strings.Join(list[:], ",")
   
   return C.CString(result)
-  
 }
 
 //export RegQueryValueType
@@ -116,10 +112,11 @@ func RegQueryValueType(root *C.char, key *C.char, name *C.char) *C.char {
 	HKEY := GetHKEY(C.GoString(root))
 
 	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
-		 defer k.Close()
-		 _, valtype, _ := k.GetValue(C.GoString(name),buf)
+	defer k.Close()
+	_, valtype, _ := k.GetValue(C.GoString(name),buf)
  
 	switch valtype {
+		case 0: result = "NONE"
 		case 1: result = "SZ"
 		case 2: result = "EXPAND_SZ"
 		case 3: result = "BINARY"
@@ -144,8 +141,23 @@ func RegQueryStringValue(root *C.char, key *C.char, name *C.char) *C.char { // R
 	HKEY := GetHKEY(C.GoString(root))
 
 	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
-		 defer k.Close()
-		 result, _, _ = k.GetStringValue(C.GoString(name))
+	defer k.Close()
+	result, _, _ = k.GetStringValue(C.GoString(name))
+ 
+	return C.CString(result)
+}
+
+//export RegQueryMultiStringValue
+func RegQueryMultiStringValue(root *C.char, key *C.char, name *C.char) *C.char { // REG_MULTI_SZ
+
+	var result string
+	HKEY := GetHKEY(C.GoString(root))
+
+	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
+	defer k.Close()
+	list, _, _ := k.GetStringsValue(C.GoString(name))
+  
+  result = strings.Join(list[:], "\\0")
  
 	return C.CString(result)
 }
@@ -157,9 +169,9 @@ func RegQueryStringValueAndExpand(root *C.char, key *C.char, name *C.char) *C.ch
 	HKEY := GetHKEY(C.GoString(root))
 
 	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
-		 defer k.Close()
-		 s, _, _ := k.GetStringValue(C.GoString(name))
-     result, _ = registry.ExpandString(s)
+	defer k.Close()
+	s, _, _ := k.GetStringValue(C.GoString(name))
+  result, _ = registry.ExpandString(s)
      
 	return C.CString(result)
 }
@@ -171,8 +183,8 @@ func RegQueryBinaryValue(root *C.char, key *C.char, name *C.char) *C.char { //RE
 	HKEY := GetHKEY(C.GoString(root))
 
 	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
-		 defer k.Close()
-		 x, _, _ := k.GetBinaryValue(C.GoString(name))
+	defer k.Close()
+	x, _, _ := k.GetBinaryValue(C.GoString(name))
  
   result = hex.EncodeToString(x)
  
@@ -187,13 +199,12 @@ func RegQueryIntegerValue(root *C.char, key *C.char, name *C.char) *C.char { //R
 	HKEY := GetHKEY(C.GoString(root))
 
 	k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)
-		 defer k.Close()
-		 i, _, _ := k.GetIntegerValue(C.GoString(name))
+	defer k.Close()
+	i, _, _ := k.GetIntegerValue(C.GoString(name))
  
   result = strconv.FormatUint(i, 10)
  
 	return C.CString(result)
-
 }
 
 //export RegWriteKey
@@ -202,8 +213,7 @@ func RegWriteKey (root *C.char, key *C.char) {
 	HKEY := GetHKEY(C.GoString(root))
 
   k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-
+  defer k.Close()
 }
 
 //export RegWriteStringValue
@@ -212,8 +222,19 @@ func RegWriteStringValue(root *C.char, key *C.char, name *C.char, value *C.char)
 	HKEY := GetHKEY(C.GoString(root))
   
   k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-    k.SetStringValue(C.GoString(name), C.GoString(value))
+  defer k.Close()
+  k.SetStringValue(C.GoString(name), C.GoString(value))
+}
+
+//export RegWriteMultiStringValue
+func RegWriteMultiStringValue(root *C.char, key *C.char, name *C.char, value *C.char) {
+
+	HKEY := GetHKEY(C.GoString(root))
+  strings := strings.Split(C.GoString(value), "\\0")
+
+  k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
+  defer k.Close()
+  k.SetStringsValue(C.GoString(name), strings)
 }
 
 //export RegWriteExpandStringValue
@@ -222,8 +243,8 @@ func RegWriteExpandStringValue(root *C.char, key *C.char, name *C.char, value *C
 	HKEY := GetHKEY(C.GoString(root))
   
   k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-    k.SetExpandStringValue(C.GoString(name), C.GoString(value))
+  defer k.Close()
+  k.SetExpandStringValue(C.GoString(name), C.GoString(value))
 }
 
 //export RegWriteBinaryValue
@@ -232,9 +253,9 @@ func RegWriteBinaryValue(root *C.char, key *C.char, name *C.char, value *C.char)
 	HKEY := GetHKEY(C.GoString(root))
   
   k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-    x, _ := hex.DecodeString(C.GoString(value))
-    k.SetBinaryValue(C.GoString(name), x)
+  defer k.Close()
+  x, _ := hex.DecodeString(C.GoString(value))
+  k.SetBinaryValue(C.GoString(name), x)
 }
 
 //export RegWriteDwordValue
@@ -243,9 +264,9 @@ func RegWriteDwordValue(root *C.char, key *C.char, name *C.char, value *C.char) 
 	HKEY := GetHKEY(C.GoString(root))
   
   k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-    i, _ := strconv.ParseUint(C.GoString(value), 10, 32)
-    k.SetDWordValue(C.GoString(name), uint32(i))
+  defer k.Close()
+  i, _ := strconv.ParseUint(C.GoString(value), 10, 32)
+  k.SetDWordValue(C.GoString(name), uint32(i))
 }
 
 //export RegWriteQwordValue
@@ -254,9 +275,9 @@ func RegWriteQwordValue(root *C.char, key *C.char, name *C.char, value *C.char) 
 	HKEY := GetHKEY(C.GoString(root))
   
   k, _, _ := registry.CreateKey(HKEY, C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-    i, _ := strconv.ParseUint(C.GoString(value), 10, 64)
-    k.SetQWordValue(C.GoString(name), i)
+  defer k.Close()
+  i, _ := strconv.ParseUint(C.GoString(value), 10, 64)
+  k.SetQWordValue(C.GoString(name), i)
 }
 
 //export RegDeleteKeyValue
@@ -265,8 +286,8 @@ func RegDeleteKeyValue (root *C.char, key *C.char, name *C.char) {
   HKEY := GetHKEY(C.GoString(root))
 
   k, _ := registry.OpenKey(HKEY , C.GoString(key), registry.ALL_ACCESS) 
-    defer k.Close()
-    k.DeleteValue(C.GoString(name))
+  defer k.Close()
+  k.DeleteValue(C.GoString(name))
 
 }
 
@@ -276,7 +297,6 @@ func RegDeleteKey (root *C.char, key *C.char) {
   HKEY := GetHKEY(C.GoString(root))
 
   registry.DeleteKey(HKEY, C.GoString(key)) 
-
 }
 
 func main() {}

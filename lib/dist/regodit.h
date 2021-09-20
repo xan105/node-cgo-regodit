@@ -79,6 +79,8 @@ extern char* RegQueryValueType(char* p0, char* p1, char* p2);
 
 extern char* RegQueryStringValue(char* p0, char* p1, char* p2);
 
+extern char* RegQueryMultiStringValue(char* p0, char* p1, char* p2);
+
 extern char* RegQueryStringValueAndExpand(char* p0, char* p1, char* p2);
 
 extern char* RegQueryBinaryValue(char* p0, char* p1, char* p2);
@@ -88,6 +90,8 @@ extern char* RegQueryIntegerValue(char* p0, char* p1, char* p2);
 extern void RegWriteKey(char* p0, char* p1);
 
 extern void RegWriteStringValue(char* p0, char* p1, char* p2, char* p3);
+
+extern void RegWriteMultiStringValue(char* p0, char* p1, char* p2, char* p3);
 
 extern void RegWriteExpandStringValue(char* p0, char* p1, char* p2, char* p3);
 
