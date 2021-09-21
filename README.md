@@ -47,7 +47,7 @@ API
 ⚠️ This module is only available as an ECMAScript module (ESM) starting with version 2.0.0.<br />
 Previous version(s) are CommonJS (CJS) with an ESM wrapper.
 
-💡 There is a promise version of every function under the `promises` namespace.
+💡 Promises are under the `promises` namespace.
 ```js
 import * as regedit from 'regodit';
 regedit.promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
