@@ -48,8 +48,11 @@ API
 Previous version(s) are CommonJS (CJS) with an ESM wrapper.
 
 💡 There is a promise version of every function under the `promises` namespace.
-- promises.RegListAllSubkeys("HKCU","Software/Valve") -> Promise
-- RegListAllSubkeys("HKCU","Software/Valve") -> Sync
+```js
+import * as regedit from 'regodit';
+regedit.promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
+regedit.RegListAllSubkeys("HKCU","Software/Valve") //Sync
+```
 
 ✔️ root key accepted values are "HKCR", "HKCU", "HKLM", "HKU" or "HKCC". 
 
