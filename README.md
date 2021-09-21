@@ -108,18 +108,18 @@ Return an empty array If the key doesn't exist or has no values.
 
 Return key/name type:
 
-- "NONE"
-- "SZ"
-- "EXPAND_SZ"
-- "BINARY"
-- "DWORD"
-- "DWORD_BIG_ENDIAN"
-- "LINK"
-- "MULTI_SZ"
-- "RESOURCE_LIST"
-- "FULL_RESOURCE_DESCRIPTOR"
-- "RESOURCE_REQUIREMENTS_LIST"
-- "QWORD"
+- NONE
+- SZ
+- EXPAND_SZ
+- BINARY
+- DWORD
+- DWORD_BIG_ENDIAN
+- LINK
+- MULTI_SZ
+- RESOURCE_LIST
+- FULL_RESOURCE_DESCRIPTOR
+- RESOURCE_REQUIREMENTS_LIST
+- QWORD
 
 Return "NONE" If the key doesn't exist or is of an unknown type.
 
@@ -172,7 +172,7 @@ Return `null` If the key/name doesn't exist.
 Return integer value of given key/name.
 
 NB: REG_QWORD is a 64-bit unsigned integer.<br />
-Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER]https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
+Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)
 
 Return `null` If the key/name doesn't exist.
 
