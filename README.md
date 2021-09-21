@@ -1,5 +1,9 @@
-Read/Write Windows Registry in Node using ffi-napi with a GoLang c-shared DLL.<br />
-This was to demo that you can use GoLang c-shared DLL (Go>=1.10) with ffi.<br />
+About
+=====
+
+Read/Write Windows Registry in Node using GoLang.
+
+Made to demo that you can bind GoLang as a c-shared DLL (Go>=1.10) to node-ffi-napi.<br />
 Syntax is inspired from InnoSetup's Pascal Scripting Registry functions.
 
 Example
@@ -7,180 +11,273 @@ Example
 
 ```js
 
-const regedit = require("regodit"); //commonjs
-import regedit from 'regodit'; //esm
+import * as regedit from 'regodit/promises';
 
-(async()=>{
+//Reading
+const steamPath = await regedit.RegQueryStringValue("HKCU","Software/Valve/Steam","steamPath");
+const accel = await regedit.RegQueryIntegerValue("HKCU","Software/Valve/Steam","H264HWAccel");
 
-  //promise
-  const res = await regedit.promises.RegListAllSubkeys("HKCU","Software/Valve");
-  console.log(res);
-  
-  //sync
-  const resSync = regedit.RegListAllSubkeys("HKCU","Software/Valve");
-  console.log(resSync);
+//Writing
+await regedit.RegWriteStringValue("HKCU","Software/Valve/Steam","AutoLoginUser","user1"); 
+await regedit.RegDeleteKeyValue("HKCU","Software/Valve/Steam","AutoLoginUser");
+await regedit.RegDeleteKeyIncludingSubkeys("HKCU","Software/Valve/Steam");
+await regedit.RegWriteKey("HKCU","Software/Valve/Steam");
 
-})().catch(console.error);
+//Util
+const exists = await regedit.RegKeyExists("HKCU","Software/Valve");
+const subkeys = await regedit.RegListAllSubkeys("HKCU","Software/Valve");
+const values = await regedit.RegListAllValues("HKCU","Software/Valve/Steam");
+const type = await regedit.RegQueryValueType("HKCU","Software/Valve/Steam","AutoLoginUser"); //SZ (string)
+
+//Import/Export
+const copy = await regedit.RegExportKey("HKCU","Software/Valve/Steam");
+await regedit.RegImportKey("HKCU","Software/Valve/Steam2",copy);
 ```
 
 Install
 =======
 
-```npm install regodit```
+`npm install regodit`
 
-Prequisites: C/C++ build tools (Visual Studio) and Python 2.7 (node-gyp) in order to build [ffi-napi](https://www.npmjs.com/package/ffi-napi).
+_Prequisites: C/C++ build tools and Python 3.x (node-gyp) in order to build [node-ffi-napi](https://www.npmjs.com/package/ffi-napi)._
 
 API
 ===
 
-_Promise are under the "promises" namespace otherwise sync method_
+⚠️ This module is only available as an ECMAScript module (ESM) starting with version 2.0.0.<br />
+Previous version(s) are CommonJS (CJS) with an ESM wrapper.
+
+💡 There is a promise version of every function under the `promises` namespace.
 
 eg: 
-
 - promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
 - RegListAllSubkeys("HKCU","Software/Valve") //Sync
 
+> root key accepted values are "HKCR", "HKCU", "HKLM", "HKU" or "HKCC". 
+
+## Named export
+
 ### RegKeyExists 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) bool`
+`(root: string, key: string): bool`
 
 If the key exists or not.
 
 ### RegListAllSubkeys
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null`
+`(root: string, key: string): string[] | []`
 
 List all subkeys name for a given key (non-recursive).
-
 NB: For a more complete listing see RegExportKey below.
+
+```js
+const result = RegListAllSubkeys("HKCU","Software/Valve/Steam");
+console.log(result);
+/*output
+[
+  "ActiveProcess",
+  "Apps",
+  "steamglobal"
+  "Users"
+]
+*/
+```
+
+Return an empty array If the key doesn't exist or has no subkeys.
 
 ### RegListAllValues 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) string[] | null`
+`(root: string, key: string): string[] | []`
 
 List all values name for a given key.
-
 NB: For a more complete listing see RegExportKey below.
 
+```js
+const result = RegListAllValues("HKCU","Software/Valve/Steam");
+console.log(result);
+/*output
+[
+  "AlreadyRetriedOfflineMode",
+  "AutoLoginUser",
+  "BigPictureInForeground",
+  "DPIScaling",
+  ...
+]
+*/
+```
+
+Return an empty array If the key doesn't exist or has no values.
+
 ### RegQueryValueType
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) 
-string : "NONE"|"SZ"|"EXPAND_SZ"|"BINARY"|"DWORD"|"DWORD_BIG_ENDIAN"|"LINK"|"MULTI_SZ"|"RESOURCE_LIST"|"FULL_RESOURCE_DESCRIPTOR"|"RESOURCE_REQUIREMENTS_LIST"|"QWORD"` 
+ `(root: string, key: string, name: string): string`
 
-Return key/value type.
+Return key/name type:
 
-### RegQueryStringValue //REG_SZ & REG_EXPAND_SZ
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+- "NONE"
+- "SZ"
+- "EXPAND_SZ"
+- "BINARY"
+- "DWORD"
+- "DWORD_BIG_ENDIAN"
+- "LINK"
+- "MULTI_SZ"
+- "RESOURCE_LIST"
+- "FULL_RESOURCE_DESCRIPTOR"
+- "RESOURCE_REQUIREMENTS_LIST"
+- "QWORD"
 
-Return string value of given key/valueName.
+Return "NONE" If the key doesn't exist or is of an unknown type.
 
-### RegQueryStringValueAndExpand //REG_EXPAND_SZ (expands environment-variables)
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+### RegQueryStringValue
+`(root: string, key: string, name: string): string | null`
 
-Return string value of given key/valueName and expands environment-variable by replacing them with the values defined for the current user.
+Return string value of given key/name.
+Return `null` If the key/name doesn't exist.
 
-### RegQueryBinaryValue //REG_BINARY
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+⚠️ Supported: REG_SZ & REG_EXPAND_SZ
 
-Return binary value of given key/valueName.
+### RegQueryMultiStringValue
+`(root: string, key: string, name: string): string[] | null`
 
-### RegQueryIntegerValue //REG_DWORD & REG_QWORD
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) string | null`
+Return string values of given key/name.
+Return `null` If the key/name doesn't exist.
 
-Return integer value of given key/valueName.
+⚠️ Supported: REG_MULTI_SZ
+
+### RegQueryStringValueAndExpand
+`(root: string, key: string, name: string): string | null`
+
+Return string value of given key/name and expand any environment-variable by replacing them with the value defined for the current user.
+
+```js
+//Expanded
+regedit.RegQueryStringValueAndExpand("HKCU","Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders","AppData")
+//"C:\Users\Xan\AppData\Roaming"
+
+//Non-Expanded
+regedit.RegQueryStringValue("HKCU","Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders","AppData")
+//"%USERPROFILE%\AppData\Roaming"
+```
+
+Return `null` If the key/name doesn't exist.
+
+⚠️ Supported: REG_EXPAND_SZ
+
+### RegQueryBinaryValue
+`(root: string, key: string, name: string): Buffer | null`
+
+Return binary value of given key/name.
+Return `null` If the key/name doesn't exist.
+
+⚠️ Supported: REG_BINARY
+
+### RegQueryIntegerValue
+`(root: string, key: string, name: string): number | bigint | null`
+
+Return integer value of given key/name.
 
 NB: REG_QWORD is a 64-bit unsigned integer.
+Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER]https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
+
+Return `null` If the key/name doesn't exist.
+
+⚠️ Supported: REG_DWORD & REG_QWORD
 
 ### RegWriteKey
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
+`(root: string, key: string): void`
 
 Create given key whether the key already exists or not (subkeys are created if necessary).
 
 ### RegWriteStringValue 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+`(root: string, key: string, name: string, value: string): void`
 
-Write string value in given key/valueName as 'REG_SZ' (subkeys are created if necessary).
+Write string value in given key/name as 'REG_SZ' (subkeys are created if necessary).
+
+### RegWriteMultiStringValue 
+`(root: string, key: string, name: string, value: string[]): void`
+
+Write string values in given key/name as 'REG_MULTI_SZ' (subkeys are created if necessary).
 
 ### RegWriteExpandStringValue 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+`(root: string, key: string, name: string, value: string): void`
 
-Write string value in given key/valueName as 'REG_EXPAND_SZ' (subkeys are created if necessary).
+Write string value in given key/name as 'REG_EXPAND_SZ' (subkeys are created if necessary).
 
 ### RegWriteBinaryValue 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+`(root: string, key: string, name: string, value: Buffer): void`
 
-Write binary value in given key/valueName as 'REG_BINARY' (subkeys are created if necessary).
+Write binary value in given key/name as 'REG_BINARY' (subkeys are created if necessary).
 
 ### RegWriteDwordValue 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+`(root: string, key: string, name: string, value: number | bigint | string): void`
 
-Write integer value in given key/valueName as 'REG_DWORD' (subkeys are created if necessary).
+Write integer value in given key/name as 'REG_DWORD' (subkeys are created if necessary).
 
 ### RegWriteQwordValue 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name, string value) void`
+`(root: string, key: string, name: string, value: number | bigint | string): void`
 
-Write integer value in given key/valueName as 'REG_QWORD' (subkeys are created if necessary).
+Write integer value in given key/name as 'REG_QWORD' (subkeys are created if necessary).
 
 ### RegDeleteKeyValue 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, string name) void`
+`(root: string, key: string, name: string): void`
 
-Delete given key/valueName.
+Delete value in given key.
 
 ### RegDeleteKey 
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
+`(root: string, key: string): void`
 
 Delete given key. 
 
-NB: If key has some subkeys then key will not be deleted (see below RegDeleteKeyIncludingSubkeys for this)
+NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyIncludingSubkeys below instead)
 
 ### RegDeleteKeyIncludingSubkeys
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key) void`
+`(root: string, key: string): void`
 
-Delete given key and all subkeys.
+Delete given key and all its subkeys.
 
 ### RegExportKey
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, [obj option]) RegDump{}¹`
+`(root: string, key: string, option:? obj): obj`
 
 List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
-Export it in an object representation (see ¹RegDump) where<br/>
-subkeys are treated as nested objects including an additional propriety values containing values data if any.
+Exported in an object representation where<br/>
+subkeys are treated as nested objects including an additional propriety `__values__` containing values data if any.
 
 #### option ⚙️
 
 |name|type|default|description|
 |----|----|-------|------------|
 |recursive|bool|true|List values recursively|
-|absenceError|bool|true|Throw when a key doesn't exist|
 
 Example
 -------
 
 ```js
-const regdump = await regedit.promises.RegExportKey("HKCU","Software/Valve/Steam");
-console.log(regdump);
+const copy = await RegExportKey("HKCU","Software/Valve/Steam");
+console.log(copy);
 
 //Console output:
 
 {
-  "values": [ //Values of HKCU/Software/Valve/Steam
-	{"name": "H264HWAccel","type": "DWORD","data": "1"},
+  "__values__": [ //Values of HKCU/Software/Valve/Steam
+    {"name": "H264HWAccel","type": "DWORD","data": 1},
     {"name": "Language","type": "SZ","data": "english"},
     ... //etc
    ],
    "ActiveProcess": { //Subkey ActiveProcess of HKCU/Software/Valve/Steam
-    "values": [ //Values of HKCU/Software/Valve/Steam/ActiveProcess
+    "__values__": [ //Values of HKCU/Software/Valve/Steam/ActiveProcess
       {"name": "SteamClientDll","type": "SZ","data": "C:\\Program Files (x86)\\Steam\\steamclient.dll"},
       {"name": "SteamClientDll64","type": "SZ","data": "C:\\Program Files (x86)\\Steam\\steamclient64.dll"},
       ... //etc
     ]
    },
 	"Apps": { //Subkey Apps of HKCU/Software/Valve/Steam
-		"values": [], //Values of HKCU/Software/Valve/Steam/Apps (in this case none)
+		"__values__": [], //Values of HKCU/Software/Valve/Steam/Apps (in this case none)
 		"480": { //Subkey 480 of HKCU/Software/Valve/Steam/Apps
-		  "values": [ //Values of HKCU/Software/Valve/Steam/Apps/480
+		  "__values__": [ //Values of HKCU/Software/Valve/Steam/Apps/480
 			{"name": "Name","type": "SZ","data": "Spacewar"}, 
 			... //etc
 		  ]
 		},
 		"550": {
-		  "values": [
-			{"name": "Installed","type": "DWORD","data": "0"},
+		  "__values__": [
+			{"name": "Installed","type": "DWORD","data": 0},
 			{"name": "Name","type": "SZ","data": "Left 4 Dead 2"},
 			... //etc
 		  ]
@@ -192,26 +289,16 @@ console.log(regdump);
 ```
 
 ### RegImportKey
-`(string root: "HKCR"|"HKCU"|"HKLM"|"HKU"|"HKCC", string key, RegDump{}¹ data, [obj option]) void`
+`(root: string, key: string, data: obj, option:? obj): void`
 
-Import back to the registry a previously exported key (see RegExportKey and ¹RegDump).<br/>
+Import back to the registry a previously exported key (see RegExportKey).<br/>
 This overwrites existing data if any.
 
 #### option ⚙️
 
 |name|type|default|description|
 |----|----|-------|-----------|
-|absenceDelete|bool|false|Delete keys in target that exists outside the dump|
-
-<hr/>
-
-¹RegDump:
-```ts
-interface RegDump {
-	values: [ {name: string, type: string, data: string} ...], 
-	subkeyName : RegDump{}, ... 
-}
-```
+|purgeDest|bool|false|Delete target key and its subkeys before importing|
 
 Build cgo-dll
 =============
