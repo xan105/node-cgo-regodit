@@ -48,12 +48,10 @@ API
 Previous version(s) are CommonJS (CJS) with an ESM wrapper.
 
 💡 There is a promise version of every function under the `promises` namespace.
+- promises.RegListAllSubkeys("HKCU","Software/Valve") -> Promise
+- RegListAllSubkeys("HKCU","Software/Valve") -> Sync
 
-eg: 
-- promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
-- RegListAllSubkeys("HKCU","Software/Valve") //Sync
-
-> root key accepted values are "HKCR", "HKCU", "HKLM", "HKU" or "HKCC". 
+✔️ root key accepted values are "HKCR", "HKCU", "HKLM", "HKU" or "HKCC". 
 
 ## Named export
 
@@ -65,7 +63,7 @@ If the key exists or not.
 ### RegListAllSubkeys
 `(root: string, key: string): string[] | []`
 
-List all subkeys name for a given key (non-recursive).
+List all subkeys name for a given key (non-recursive).<br />
 NB: For a more complete listing see RegExportKey below.
 
 ```js
@@ -86,7 +84,7 @@ Return an empty array If the key doesn't exist or has no subkeys.
 ### RegListAllValues 
 `(root: string, key: string): string[] | []`
 
-List all values name for a given key.
+List all values name for a given key.<br />
 NB: For a more complete listing see RegExportKey below.
 
 ```js
@@ -128,7 +126,7 @@ Return "NONE" If the key doesn't exist or is of an unknown type.
 ### RegQueryStringValue
 `(root: string, key: string, name: string): string | null`
 
-Return string value of given key/name.
+Return string value of given key/name.<br />
 Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_SZ & REG_EXPAND_SZ
@@ -136,7 +134,7 @@ Return `null` If the key/name doesn't exist.
 ### RegQueryMultiStringValue
 `(root: string, key: string, name: string): string[] | null`
 
-Return string values of given key/name.
+Return string values of given key/name.<br />
 Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_MULTI_SZ
@@ -163,7 +161,7 @@ Return `null` If the key/name doesn't exist.
 ### RegQueryBinaryValue
 `(root: string, key: string, name: string): Buffer | null`
 
-Return binary value of given key/name.
+Return binary value of given key/name.<br />
 Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_BINARY
@@ -173,7 +171,7 @@ Return `null` If the key/name doesn't exist.
 
 Return integer value of given key/name.
 
-NB: REG_QWORD is a 64-bit unsigned integer.
+NB: REG_QWORD is a 64-bit unsigned integer.<br />
 Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER]https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
 
 Return `null` If the key/name doesn't exist.
@@ -223,8 +221,7 @@ Delete value in given key.
 ### RegDeleteKey 
 `(root: string, key: string): void`
 
-Delete given key. 
-
+Delete given key.<br />
 NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyIncludingSubkeys below instead)
 
 ### RegDeleteKeyIncludingSubkeys
