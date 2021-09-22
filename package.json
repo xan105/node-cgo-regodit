@@ -1,9 +1,12 @@
 {
   "name": "regodit",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Access Windows registry via a cgo dll (ffi-napi)",
   "type": "module",
-  "exports": "./lib/esm.js",
+  "exports": {  
+    ".": "./lib/esm.js",
+    "./promises": "./lib/promises.js"
+  },
   "types": "./types/esm.d.ts",
   "os": [
     "win32"
