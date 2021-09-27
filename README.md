@@ -39,7 +39,7 @@ Install
 
 `npm install regodit`
 
-_Prequisites: C/C++ build tools and Python 3.x (node-gyp) in order to build [node-ffi-napi](https://www.npmjs.com/package/ffi-napi)._
+_Prerequisite: C/C++ build tools and Python 3.x (node-gyp) in order to build [node-ffi-napi](https://www.npmjs.com/package/ffi-napi)._
 
 API
 ===
@@ -233,7 +233,7 @@ NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyI
 Delete given key and all its subkeys.
 
 ### RegExportKey
-`(root: string, key: string, option:? obj): obj`
+`(root: string, key: string, option?: obj): obj`
 
 List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
 Exported in an object representation where<br/>
@@ -289,7 +289,7 @@ console.log(copy);
 ```
 
 ### RegImportKey
-`(root: string, key: string, data: obj, option:? obj): void`
+`(root: string, key: string, data: obj, option?: obj): void`
 
 Import back to the registry a previously exported key (see RegExportKey).<br/>
 This overwrites existing data if any.

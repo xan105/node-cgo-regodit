@@ -36,8 +36,8 @@ declare interface IImportOpts {
   purgeDest?: bool
 }
 
-export RegExportKey(root: string,key: string,option:? IExportOpts): IRegistry
-export RegImportKey(root: string,key: string,data: IRegistry, option:? IImportOpts): void
+export RegExportKey(root: string,key: string,option?: IExportOpts): IRegistry
+export RegImportKey(root: string,key: string,data: IRegistry, option?: IImportOpts): void
 export RegDeleteKeyIncludingSubkeys(root: string,key: string): void
 
 export * as promises from "./promises.d.ts"
