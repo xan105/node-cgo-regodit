@@ -4,37 +4,37 @@ if (Object.keys(regedit.promises).length !== Object.keys(regedit).length - 1) co
 
 let res;
 	
-res = await regedit.promises.RegKeyExists("HKCU","Software/Valve");
+res = await regedit.promises.regKeyExists("HKCU","Software/Valve");
 console.log(res);
 	
-res = await regedit.promises.RegListAllSubkeys("HKCU","Software/Valve");
+res = await regedit.promises.regListAllSubkeys("HKCU","Software/Valve");
 console.log(res);
 	
-res = await regedit.promises.RegListAllValues("HKCU","Software/Valve/Steam");
+res = await regedit.promises.regListAllValues("HKCU","Software/Valve/Steam");
 console.log(res);
 
-res = await regedit.promises.RegQueryStringValue("HKCU","Software/Valve/Steam","steamPath");
+res = await regedit.promises.regQueryStringValue("HKCU","Software/Valve/Steam","steamPath");
 console.log(res);
 	
-res = await regedit.promises.RegQueryIntegerValue("HKCU","Software/Valve/Steam","H264HWAccel");
+res = await regedit.promises.regQueryIntegerValue("HKCU","Software/Valve/Steam","H264HWAccel");
 console.log(res);
 	
-await regedit.promises.RegWriteStringValue("HKCU","test/some/subkey/that/didnt/exist","hello","hello world"); 
-res = await regedit.promises.RegQueryStringValue("HKCU","test/some/subkey/that/didnt/exist","hello");
+await regedit.promises.regWriteStringValue("HKCU","test/some/subkey/that/didnt/exist","hello","hello world"); 
+res = await regedit.promises.regQueryStringValue("HKCU","test/some/subkey/that/didnt/exist","hello");
 console.log(res);
 	
-await regedit.promises.RegDeleteKeyValue("HKCU","test/some/subkey/that/didnt/exist","hello");
-res = await regedit.promises.RegQueryStringValue("HKCU","test/some/subkey/that/didnt/exist","hello");
+await regedit.promises.regDeleteKeyValue("HKCU","test/some/subkey/that/didnt/exist","hello");
+res = await regedit.promises.regQueryStringValue("HKCU","test/some/subkey/that/didnt/exist","hello");
 console.log(res);
 	
-await regedit.promises.RegDeleteKey("HKCU","test/some/subkey/that/didnt/exist");
-res = await regedit.promises.RegKeyExists("HKCU","test/some/subkey/that/didnt/exist");
+await regedit.promises.regDeleteKey("HKCU","test/some/subkey/that/didnt/exist");
+res = await regedit.promises.regKeyExists("HKCU","test/some/subkey/that/didnt/exist");
 console.log(res);
 	
-const regdump = await regedit.promises.RegExportKey("HKCU","Software/Valve/Steam");
+const regdump = await regedit.promises.regExportKey("HKCU","Software/Valve/Steam");
 console.log(regdump);
-await regedit.promises.RegImportKey("HKCU","Software/Valve/Steam - Copy",regdump);
+await regedit.promises.regImportKey("HKCU","Software/Valve/Steam - Copy",regdump);
 
-await regedit.promises.RegDeleteKeyIncludingSubkeys("HKCU","Software/Valve/Steam - Copy");
-res = await regedit.promises.RegKeyExists("HKCU","Software/Valve/Steam - Copy");
+await regedit.promises.regDeleteKeyIncludingSubkeys("HKCU","Software/Valve/Steam - Copy");
+res = await regedit.promises.regKeyExists("HKCU","Software/Valve/Steam - Copy");
 console.log(res);
