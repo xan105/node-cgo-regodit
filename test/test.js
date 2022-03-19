@@ -1,4 +1,4 @@
-import * as regedit from '../lib/esm.js';
+import * as regedit from '../lib/index.js';
 
 if (Object.keys(regedit.promises).length !== Object.keys(regedit).length - 1) console.error("Promises/Sync method count mismatch");
 

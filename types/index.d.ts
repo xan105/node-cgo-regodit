@@ -1,4 +1,4 @@
-export function RegKeyExists(root: string,key: string): bool
+export function RegKeyExists(root: string,key: string): boolean
 export function RegListAllSubkeys(root: string,key: string): any
 export function RegListAllValues(root: string,key: string): any
 export function RegQueryValueType(root: string,key: string,name: string): string
@@ -12,8 +12,8 @@ export function RegWriteStringValue(root: string,key: string,name: string,value:
 export function RegWriteMultiStringValue(root: string,key: string,name: string,value: string[]): void
 export function RegWriteExpandStringValue(root: string,key: string,name: string,value: string): void
 export function RegWriteBinaryValue(root: string,key: string,name: string,value: Buffer): void
-export function RegWriteDwordValue(root: string,key: string,name: string,value: number | bigint | string): void
-export function RegWriteQwordValue(root: string,key: string,name: string,value: number | bigint | string): void
+export function RegWriteDwordValue(root: string,key: string,name: string,value: number | bigint): void
+export function RegWriteQwordValue(root: string,key: string,name: string,value: number | bigint): void
 export function RegDeleteKeyValue(root: string,key: string,name: string): void
 export function RegDeleteKey(root: string,key: string): void
 
@@ -29,11 +29,11 @@ declare interface IRegistry {
 }
 
 declare interface IExportOpts {
-  recursive?: bool
+  recursive?: boolean
 }
 
 declare interface IImportOpts {
-  purgeDest?: bool
+  purgeDest?: boolean
 }
 
 export RegExportKey(root: string,key: string,option?: IExportOpts): IRegistry

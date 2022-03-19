@@ -37,7 +37,9 @@ await regedit.RegImportKey("HKCU","Software/Valve/Steam2",copy);
 Install
 =======
 
-`npm install regodit`
+```
+npm install regodit
+```
 
 _Prerequisite: C/C++ build tools and Python 3.x (node-gyp) in order to build [node-ffi-napi](https://www.npmjs.com/package/ffi-napi)._
 
@@ -52,19 +54,20 @@ Previous version(s) are CommonJS (CJS) with an ESM wrapper.
 import * as regedit from 'regodit';
 regedit.promises.RegListAllSubkeys("HKCU","Software/Valve") //Promise
 regedit.RegListAllSubkeys("HKCU","Software/Valve") //Sync
+
+import * as regedit from 'regodit/promises';
+regedit.RegListAllSubkeys("HKCU","Software/Valve") //Promise
 ```
 
 ✔️ root key accepted values are "HKCR", "HKCU", "HKLM", "HKU" or "HKCC". 
 
 ## Named export
 
-### RegKeyExists 
-`(root: string, key: string): bool`
+### `RegKeyExists(root: string, key: string): boolean`
 
 If the key exists or not.
 
-### RegListAllSubkeys
-`(root: string, key: string): string[] | []`
+### `RegListAllSubkeys(root: string, key: string): string[] | []`
 
 List all subkeys name for a given key (non-recursive).<br />
 NB: For a more complete listing see RegExportKey below.
@@ -84,8 +87,7 @@ console.log(result);
 
 Return an empty array If the key doesn't exist or has no subkeys.
 
-### RegListAllValues 
-`(root: string, key: string): string[] | []`
+### `RegListAllValues(root: string, key: string): string[] | []`
 
 List all values name for a given key.<br />
 NB: For a more complete listing see RegExportKey below.
@@ -106,8 +108,7 @@ console.log(result);
 
 Return an empty array If the key doesn't exist or has no values.
 
-### RegQueryValueType
- `(root: string, key: string, name: string): string`
+### `RegQueryValueType(root: string, key: string, name: string): string`
 
 Return key/name type:
 
@@ -126,24 +127,21 @@ Return key/name type:
 
 Return "NONE" If the key doesn't exist or is of an unknown type.
 
-### RegQueryStringValue
-`(root: string, key: string, name: string): string | null`
+### `RegQueryStringValue(root: string, key: string, name: string): string | null`
 
 Return string value of given key/name.<br />
 Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_SZ & REG_EXPAND_SZ
 
-### RegQueryMultiStringValue
-`(root: string, key: string, name: string): string[] | null`
+### `RegQueryMultiStringValue(root: string, key: string, name: string): string[] | null`
 
 Return string values of given key/name.<br />
 Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_MULTI_SZ
 
-### RegQueryStringValueAndExpand
-`(root: string, key: string, name: string): string | null`
+### `RegQueryStringValueAndExpand(root: string, key: string, name: string): string | null`
 
 Return string value of given key/name and expand any environment-variable by replacing them with the value defined for the current user.
 
@@ -161,16 +159,14 @@ Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_EXPAND_SZ
 
-### RegQueryBinaryValue
-`(root: string, key: string, name: string): Buffer | null`
+### `RegQueryBinaryValue(root: string, key: string, name: string): Buffer | null`
 
 Return binary value of given key/name.<br />
 Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_BINARY
 
-### RegQueryIntegerValue
-`(root: string, key: string, name: string): number | bigint | null`
+### `RegQueryIntegerValue(root: string, key: string, name: string): number | bigint | null`
 
 Return integer value of given key/name.
 
@@ -181,59 +177,48 @@ Return `null` If the key/name doesn't exist.
 
 ⚠️ Supported: REG_DWORD & REG_QWORD
 
-### RegWriteKey
-`(root: string, key: string): void`
+### `RegWriteKey(root: string, key: string): void`
 
 Create given key whether the key already exists or not (subkeys are created if necessary).
 
-### RegWriteStringValue 
-`(root: string, key: string, name: string, value: string): void`
+### `RegWriteStringValue(root: string, key: string, name: string, value: string): void`
 
 Write string value in given key/name as 'REG_SZ' (subkeys are created if necessary).
 
-### RegWriteMultiStringValue 
-`(root: string, key: string, name: string, value: string[]): void`
+### `RegWriteMultiStringValue(root: string, key: string, name: string, value: string[]): void`
 
 Write string values in given key/name as 'REG_MULTI_SZ' (subkeys are created if necessary).
 
-### RegWriteExpandStringValue 
-`(root: string, key: string, name: string, value: string): void`
+### `RegWriteExpandStringValue(root: string, key: string, name: string, value: string): void`
 
 Write string value in given key/name as 'REG_EXPAND_SZ' (subkeys are created if necessary).
 
-### RegWriteBinaryValue 
-`(root: string, key: string, name: string, value: Buffer): void`
+### `RegWriteBinaryValue(root: string, key: string, name: string, value: Buffer): void`
 
 Write binary value in given key/name as 'REG_BINARY' (subkeys are created if necessary).
 
-### RegWriteDwordValue 
-`(root: string, key: string, name: string, value: number | bigint | string): void`
+### `RegWriteDwordValue(root: string, key: string, name: string, value: number | bigint): void`
 
 Write integer value in given key/name as 'REG_DWORD' (subkeys are created if necessary).
 
-### RegWriteQwordValue 
-`(root: string, key: string, name: string, value: number | bigint | string): void`
+### `RegWriteQwordValue(root: string, key: string, name: string, value: number | bigint): void`
 
 Write integer value in given key/name as 'REG_QWORD' (subkeys are created if necessary).
 
-### RegDeleteKeyValue 
-`(root: string, key: string, name: string): void`
+### `RegDeleteKeyValue(root: string, key: string, name: string): void`
 
 Delete value in given key.
 
-### RegDeleteKey 
-`(root: string, key: string): void`
+### `RegDeleteKey(root: string, key: string): void`
 
 Delete given key.<br />
 NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyIncludingSubkeys below instead)
 
-### RegDeleteKeyIncludingSubkeys
-`(root: string, key: string): void`
+### `RegDeleteKeyIncludingSubkeys(root: string, key: string): void`
 
 Delete given key and all its subkeys.
 
-### RegExportKey
-`(root: string, key: string, option?: obj): obj`
+### `RegExportKey(root: string, key: string, option?: obj): obj`
 
 List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
 Exported in an object representation where<br/>
@@ -243,7 +228,7 @@ subkeys are treated as nested objects including an additional propriety `__value
 
 |name|type|default|description|
 |----|----|-------|------------|
-|recursive|bool|true|List values recursively|
+|recursive|boolean|true|List values recursively|
 
 Example
 -------
@@ -288,8 +273,7 @@ console.log(copy);
 }
 ```
 
-### RegImportKey
-`(root: string, key: string, data: obj, option?: obj): void`
+### `RegImportKey(root: string, key: string, data: obj, option?: obj): void`
 
 Import back to the registry a previously exported key (see RegExportKey).<br/>
 This overwrites existing data if any.
@@ -298,7 +282,7 @@ This overwrites existing data if any.
 
 |name|type|default|description|
 |----|----|-------|-----------|
-|purgeDest|bool|false|Delete target key and its subkeys before importing|
+|purgeDest|boolean|false|Delete target key and its subkeys before importing|
 
 Build cgo-dll
 =============
