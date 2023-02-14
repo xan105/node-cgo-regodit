@@ -1,6 +1,6 @@
 {
   "name": "regodit",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Access Windows registry via a cgo dll (ffi-napi)",
   "type": "module",
   "exports": {
