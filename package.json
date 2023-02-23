@@ -1,6 +1,6 @@
 {
   "name": "regodit",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Access Windows registry via a cgo dll (ffi-napi)",
   "type": "module",
   "exports": {
@@ -57,9 +57,9 @@
     }
   ],
   "dependencies": {
-    "@xan105/error": "^1.4.3",
-    "@xan105/ffi": "^0.2.0",
-    "@xan105/is": "^2.8.0",
+    "@xan105/error": "^1.6.0",
+    "@xan105/ffi": "^0.4.1",
+    "@xan105/is": "^2.8.1",
     "koffi": "^2.3.4"
   },
   "devDependencies": {
