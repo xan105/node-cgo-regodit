@@ -3,7 +3,7 @@ About
 
 Read/Write Windows Registry in Node using GoLang.
 
-Made to demo that you can bind GoLang as a c-shared DLL (Go>=1.10) to node-ffi-napi.<br />
+Made to demo that you can bind GoLang as a c-shared DLL (Go>=1.10) to node via FFI.<br />
 Syntax is inspired from InnoSetup's Pascal Scripting Registry functions.
 
 Example
