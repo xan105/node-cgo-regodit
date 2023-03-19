@@ -1,5 +1,5 @@
 .github/
 .eslintrc.json
 lib/go/
-lib/dist/regodit.h
+lib/dist/*.h
 test/

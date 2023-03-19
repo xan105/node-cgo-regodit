@@ -41,7 +41,7 @@ Install
 npm install regodit
 ```
 
-_Prerequisite: C/C++ build tools and Python 3.x (node-gyp) in order to build [node-ffi-napi](https://www.npmjs.com/package/ffi-napi)._
+_Prerequisite: C/C++ build tools to build [koffi](https://www.npmjs.com/package/koffi)._
 
 API
 ===
@@ -285,27 +285,9 @@ This overwrites existing data if any.
 Build cgo-dll
 =============
 
-#### Dependencies
+GoLang 1.20 windows/amd64
 
-- golang.org/x/sys/windows/registry
+⚠️ CGO requires a gcc compiler installed and added to your env PATH.<br />
+Recommended : https://jmeubank.github.io/tdm-gcc/download/
 
-Run `lib/go/dependencies.cmd` or <br />
-`>_ go get golang.org/x/sys/windows/registry`<br />
-
-`go get` requires git for windows installed and in PATH.
-
-cgo requires a gcc compiler installed and in PATH. <br />
-Recommended : http://tdm-gcc.tdragon.net/download
-  
-#### Build  
-  
-Run `lib/go/build.cmd` or `npm run-script build`<br />
-
-Manually: <br />
-```
->_ cd src\regodit
->_ go generate
->_ cd ..\
->_ set GOPATH="%~dp0"
->_ go build -buildmode=c-shared -o ..\dist\regodit.dll regodit
-```
+Run `lib/go/build.cmd` or `npm run-script build`

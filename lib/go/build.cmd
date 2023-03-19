@@ -1,5 +1,7 @@
-cd "%~dp0"\src\regodit
-go generate
 cd "%~dp0"
-set GOPATH="%~dp0"
-go build -buildmode=c-shared -o "%~dp0\..\dist\regodit.dll" regodit
+goversioninfo.exe -platform-specific=true
+set CGO_ENABLED=1
+set GOARCH=amd64
+go build -buildmode=c-shared -o "%~dp0..\dist\regodit.x64.dll" regodit
+set GOARCH=386
+go build -buildmode=c-shared -o "%~dp0..\dist\regodit.x86.dll" regodit
