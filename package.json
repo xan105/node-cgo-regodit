@@ -1,7 +1,7 @@
 {
   "name": "regodit",
-  "version": "2.2.1",
-  "description": "Access Windows registry via a cgo dll (ffi-napi)",
+  "version": "2.3.0",
+  "description": "Access Windows registry via a cgo dll",
   "type": "module",
   "exports": {
     ".": "./lib/index.js",
@@ -12,7 +12,8 @@
     "win32"
   ],
   "cpu": [
-    "x64"
+    "x64",
+    "ia32"
   ],
   "engines": {
     "node": ">=16.0.0"
