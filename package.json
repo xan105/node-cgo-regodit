@@ -8,13 +8,6 @@
     "./promises": "./lib/promises.js"
   },
   "types": "./types/index.d.ts",
-  "os": [
-    "win32"
-  ],
-  "cpu": [
-    "x64",
-    "ia32"
-  ],
   "engines": {
     "node": ">=16.0.0"
   },
@@ -59,9 +52,9 @@
   ],
   "dependencies": {
     "@xan105/error": "^1.6.0",
-    "@xan105/ffi": "^0.4.1",
+    "@xan105/ffi": "^0.5.0",
     "@xan105/is": "^2.8.1",
-    "koffi": "^2.3.4"
+    "koffi": "^2.3.9"
   },
   "devDependencies": {
     "eslint": "^8.34.0"
