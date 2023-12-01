@@ -1,5 +1,0 @@
-.github/
-.eslintrc.json
-lib/go/
-lib/dist/*.h
-test/

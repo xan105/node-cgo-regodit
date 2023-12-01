@@ -1,23 +1,39 @@
 {
   "name": "regodit",
   "version": "2.3.0",
-  "description": "Access Windows registry via a cgo dll",
+  "description": "Read/Write Windows Registry using FFI and GoLang (x86, x64 and arm64)",
   "type": "module",
   "exports": {
-    ".": "./lib/index.js",
-    "./promises": "./lib/promises.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./promises": {
+      "types": "./types/promises.d.ts",
+      "default": "./lib/promises.js"
+    }
   },
   "types": "./types/index.d.ts",
+  "files": [
+    "lib/",
+    "dist/",
+    "types/"
+  ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
-    "lint": "npx eslint --ignore-path .gitignore \"./**/*.{js,mjs}\"",
-    "build": "call lib\\go\\build.cmd"
+    "lint": "eslint \"./lib/**/*.{js,mjs}\" \"./types/**/*.d.ts\"",
+    "test": "node --test test/",
+    "check": "tsc --noemit --checkjs",
+    "declare": "tsc --declaration --emitDeclarationOnly --outDir \"./types\"",
+    "build": "call src\\build.cmd"
   },
   "keywords": [
-    "windows",
+    "regedit",
     "registry",
+    "reg",
+    "windows",
     "ffi",
     "golang",
     "cgo"
@@ -51,12 +67,16 @@
     }
   ],
   "dependencies": {
-    "@xan105/error": "^1.6.0",
-    "@xan105/ffi": "^0.5.0",
-    "@xan105/is": "^2.8.1",
-    "koffi": "^2.3.9"
+    "@xan105/error": "^1.6.2",
+    "@xan105/ffi": "^1.1.0",
+    "@xan105/is": "^2.9.3",
+    "koffi": "^2.6.10"
   },
   "devDependencies": {
-    "eslint": "^8.34.0"
+    "@types/node": "^20.10.1",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2"
   }
 }
