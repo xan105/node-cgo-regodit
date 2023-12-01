@@ -16,7 +16,7 @@
   "types": "./types/index.d.ts",
   "files": [
     "lib/",
-    "dist/",
+    "dist/*.dll",
     "types/"
   ],
   "engines": {
