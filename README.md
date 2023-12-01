@@ -10,28 +10,29 @@ Example
 =======
 
 ```js
-
-import * as regedit from "regodit/promises";
+import * as regedit from "regodit"; //sync
+import * as regedit from "regodit/promises"; //async
 
 //Reading
-const steamPath = await regedit.regQueryStringValue("HKCU","Software/Valve/Steam","steamPath");
-const accel = await regedit.regQueryIntegerValue("HKCU","Software/Valve/Steam","H264HWAccel");
+const steamPath = regedit.regQueryStringValue("HKCU", "Software/Valve/Steam", "steamPath");
+const accel = regedit.regQueryIntegerValue("HKCU", "Software/Valve/Steam", "H264HWAccel");
 
 //Writing
-await regedit.regWriteStringValue("HKCU","Software/Valve/Steam","AutoLoginUser","user1"); 
-await regedit.regDeleteKeyValue("HKCU","Software/Valve/Steam","AutoLoginUser");
-await regedit.regDeleteKeyIncludingSubkeys("HKCU","Software/Valve/Steam");
-await regedit.regWriteKey("HKCU","Software/Valve/Steam");
+regedit.regWriteStringValue("HKCU", "Software/Valve/Steam", "AutoLoginUser", "user1"); 
+regedit.regDeleteKeyValue("HKCU", "Software/Valve/Steam", "AutoLoginUser");
+
+regedit.regWriteKey("HKCU", "Software/Valve/Steam");
+regedit.regDeleteKeyIncludingSubkeys("HKCU", "Software/Valve/Steam");
 
 //Util
-const exists = await regedit.regKeyExists("HKCU","Software/Valve");
-const subkeys = await regedit.regListAllSubkeys("HKCU","Software/Valve");
-const values = await regedit.regListAllValues("HKCU","Software/Valve/Steam");
-const type = await regedit.regQueryValueType("HKCU","Software/Valve/Steam","AutoLoginUser"); //SZ (string)
+const exists = regedit.regKeyExists("HKCU", "Software/Valve");
+const subkeys = regedit.regListAllSubkeys("HKCU", "Software/Valve");
+const values = regedit.regListAllValues("HKCU", "Software/Valve/Steam");
+const type = regedit.regQueryValueType("HKCU", "Software/Valve/Steam", "AutoLoginUser");
 
 //Import/Export
-const copy = await regedit.regExportKey("HKCU","Software/Valve/Steam");
-await regedit.regImportKey("HKCU","Software/Valve/Steam2",copy);
+const dump = regedit.regExportKey("HKCU", "Software/Valve/Steam");
+regedit.regImportKey("HKCU", "Software/Valve/SteamBackup", dump);
 ```
 
 Install
@@ -64,47 +65,6 @@ regedit.regListAllSubkeys("HKCU","Software/Valve") //Promise
 #### `regKeyExists(root: string, key: string): boolean`
 
 If the key exists or not.
-
-#### `regListAllSubkeys(root: string, key: string): string[] | []`
-
-List all subkeys name for a given key (non-recursive).<br />
-NB: For a more complete listing see RegExportKey below.
-
-```js
-const result = regListAllSubkeys("HKCU","Software/Valve/Steam");
-console.log(result);
-/*output
-[
-  "ActiveProcess",
-  "Apps",
-  "steamglobal"
-  "Users"
-]
-*/
-```
-
-Return an empty array If the key doesn't exist or has no subkeys.
-
-#### `regListAllValues(root: string, key: string): string[] | []`
-
-List all values name for a given key.<br />
-NB: For a more complete listing see RegExportKey below.
-
-```js
-const result = regListAllValues("HKCU","Software/Valve/Steam");
-console.log(result);
-/*output
-[
-  "AlreadyRetriedOfflineMode",
-  "AutoLoginUser",
-  "BigPictureInForeground",
-  "DPIScaling",
-  ...
-]
-*/
-```
-
-Return an empty array If the key doesn't exist or has no values.
 
 #### `regQueryValueType(root: string, key: string, name: string): string`
 
@@ -144,13 +104,13 @@ Return `null` If the key/name doesn't exist.
 Return string value of given key/name and expand any environment-variable by replacing them with the value defined for the current user.
 
 ```js
-//Expanded
-regQueryStringValueAndExpand("HKCU","Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders","AppData")
-//"C:\Users\Xan\AppData\Roaming"
-
 //Non-Expanded
-regQueryStringValue("HKCU","Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders","AppData")
+regQueryStringValue("HKCU","Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders", "AppData")
 //"%USERPROFILE%\AppData\Roaming"
+
+//Expanded
+regQueryStringValueAndExpand("HKCU","Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders", "AppData")
+//"C:\Users\Xan\AppData\Roaming"
 ```
 
 Return `null` If the key/name doesn't exist.
@@ -216,62 +176,106 @@ NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyI
 
 Delete given key and all its subkeys.
 
+#### `regListAllSubkeys(root: string, key: string): string[] | []`
+
+List all subkeys name for a given key (non-recursive).<br />
+NB: For a more complete listing see RegExportKey below.
+
+```js
+const result = regListAllSubkeys("HKCU","Software/Valve/Steam");
+console.log(result);
+/*
+[
+  "ActiveProcess",
+  "Apps",
+  "steamglobal"
+  "Users"
+]
+*/
+```
+
+Return an empty array If the key doesn't exist or has no subkeys.
+
+#### `regListAllValues(root: string, key: string): string[] | []`
+
+List all values name for a given key.<br />
+NB: For a more complete listing see RegExportKey below.
+
+```js
+const result = regListAllValues("HKCU","Software/Valve/Steam");
+console.log(result);
+/*
+[
+  "AlreadyRetriedOfflineMode",
+  "AutoLoginUser",
+  "BigPictureInForeground",
+  "DPIScaling",
+  ...
+]
+*/
+```
+
+Return an empty array If the key doesn't exist or has no values.
+
 #### `regExportKey(root: string, key: string, option?: object): object`
 
-List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
+List all values with their name, content, type and all subkeys.<br/>
 Exported in an object representation where<br/>
-subkeys are treated as nested objects including an additional propriety `__values__` containing values data if any.
+subkeys are treated as nested objects and values stored in the property symbol "values".
 
 ##### option ⚙️
 
 |name|type|default|description|
 |----|----|-------|------------|
-|recursive|boolean|true|List values recursively|
+|recursive|boolean|true|List values of subkeys|
 
 Example:
 
 ```js
-const copy = await regExportKey("HKCU","Software/Valve/Steam");
-console.log(copy);
+const dump = await regExportKey("HKCU","Software/Valve/Steam");
+console.dir(dump, { depth: null });
+```
 
-//output:
+Output:
+
+```js
 {
-  "__values__": [ //Values of HKCU/Software/Valve/Steam
-    {"name": "H264HWAccel","type": "DWORD","data": 1},
-    {"name": "Language","type": "SZ","data": "english"},
-    ... //etc
+  [Symbol(values)]: [
+    {"name": "H264HWAccel", "type": "DWORD", "data": 1},
+    {"name": "Language", "type": "SZ", "data": "english"},
+    // etc...
    ],
-   "ActiveProcess": { //Subkey ActiveProcess of HKCU/Software/Valve/Steam
-    "__values__": [ //Values of HKCU/Software/Valve/Steam/ActiveProcess
-      {"name": "SteamClientDll","type": "SZ","data": "C:\\Program Files (x86)\\Steam\\steamclient.dll"},
-      {"name": "SteamClientDll64","type": "SZ","data": "C:\\Program Files (x86)\\Steam\\steamclient64.dll"},
-      ... //etc
+   "ActiveProcess": {
+    [Symbol(values)]: [
+      {"name": "SteamClientDll", "type": "SZ", "data": "steamclient.dll"},
+      {"name": "SteamClientDll64", "type": "SZ", "data": "steamclient64.dll"},
+      // etc...
     ]
    },
-  "Apps": { //Subkey Apps of HKCU/Software/Valve/Steam
-    "__values__": [], //Values of HKCU/Software/Valve/Steam/Apps (in this case none)
-    "480": { //Subkey 480 of HKCU/Software/Valve/Steam/Apps
-      "__values__": [ //Values of HKCU/Software/Valve/Steam/Apps/480
-      {"name": "Name","type": "SZ","data": "Spacewar"}, 
-      ... //etc
+  "Apps": { 
+    [Symbol(values)]: [],
+    "480": {
+      [Symbol(values)]: [
+        {"name": "Name", "type": "SZ", "data": "Spacewar"}, 
+        // etc...
       ]
     },
     "550": {
-      "__values__": [
-      {"name": "Installed","type": "DWORD","data": 0},
-      {"name": "Name","type": "SZ","data": "Left 4 Dead 2"},
-      ... //etc
+      [Symbol(values)]: [
+        {"name": "Installed", "type": "DWORD", "data": 0},
+        {"name": "Name", "type": "SZ", "data": "Left 4 Dead 2"},
+        // etc...
       ]
     },
-    ... //etc
+    // etc...
   },
-  ... //etc
+  // etc...
 }
 ```
 
 #### `regImportKey(root: string, key: string, data: object, option?: object): void`
 
-Import back to the registry a previously exported key (see RegExportKey).<br/>
+Import back to the registry a previously exported key dump (see RegExportKey).<br/>
 This overwrites existing data if any.
 
 ##### option ⚙️
