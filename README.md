@@ -1,9 +1,9 @@
 About
 =====
 
-Read/Write Windows Registry in Node using GoLang.
+Read/Write Windows Registry using FFI and GoLang (x86, x64 and arm64).
 
-Made to demo that you can bind GoLang as a c-shared DLL (Go>=1.10) to node via FFI.<br />
+Originally created to demo that you can bind GoLang as a c-shared DLL (Go>=1.10) to Node via FFI.<br />
 Syntax is inspired from InnoSetup's Pascal Scripting Registry functions.
 
 Example
@@ -11,7 +11,7 @@ Example
 
 ```js
 
-import * as regedit from 'regodit/promises';
+import * as regedit from "regodit/promises";
 
 //Reading
 const steamPath = await regedit.regQueryStringValue("HKCU","Software/Valve/Steam","steamPath");
@@ -41,8 +41,6 @@ Install
 npm install regodit
 ```
 
-_Prerequisite: C/C++ build tools to build [koffi](https://www.npmjs.com/package/koffi)._
-
 API
 ===
 
@@ -51,15 +49,15 @@ Previous version(s) are CommonJS (CJS) with an ESM wrapper.
 
 💡 Promises are under the `promises` namespace.
 ```js
-import * as regedit from 'regodit';
+import * as regedit from "regodit";
 regedit.promises.regListAllSubkeys("HKCU","Software/Valve") //Promise
 regedit.regListAllSubkeys("HKCU","Software/Valve") //Sync
 
-import * as regedit from 'regodit/promises';
+import * as regedit from "regodit/promises";
 regedit.regListAllSubkeys("HKCU","Software/Valve") //Promise
 ```
 
-✔️ root key accepted values are "HKCR", "HKCU", "HKLM", "HKU" or "HKCC". 
+✔️ root key accepted values are `"HKCR", "HKCU", "HKLM", "HKU" or "HKCC"`.
 
 ## Named export
 
@@ -171,7 +169,7 @@ Return `null` If the key/name doesn't exist.
 Return integer value of given key/name.
 
 NB: REG_QWORD is a 64-bit unsigned integer.<br />
-Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)
+Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_objectects/Number/MAX_SAFE_INTEGER)
 
 Return `null` If the key/name doesn't exist.
 
@@ -218,7 +216,7 @@ NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyI
 
 Delete given key and all its subkeys.
 
-#### `regExportKey(root: string, key: string, option?: obj): obj`
+#### `regExportKey(root: string, key: string, option?: object): object`
 
 List all values with their name, content, type and all subkeys from given key recursively (default) or not.<br/>
 Exported in an object representation where<br/>
@@ -250,28 +248,28 @@ console.log(copy);
       ... //etc
     ]
    },
-	"Apps": { //Subkey Apps of HKCU/Software/Valve/Steam
-		"__values__": [], //Values of HKCU/Software/Valve/Steam/Apps (in this case none)
-		"480": { //Subkey 480 of HKCU/Software/Valve/Steam/Apps
-		  "__values__": [ //Values of HKCU/Software/Valve/Steam/Apps/480
-			{"name": "Name","type": "SZ","data": "Spacewar"}, 
-			... //etc
-		  ]
-		},
-		"550": {
-		  "__values__": [
-			{"name": "Installed","type": "DWORD","data": 0},
-			{"name": "Name","type": "SZ","data": "Left 4 Dead 2"},
-			... //etc
-		  ]
-		},
-		... //etc
-	},
-	... //etc
+  "Apps": { //Subkey Apps of HKCU/Software/Valve/Steam
+    "__values__": [], //Values of HKCU/Software/Valve/Steam/Apps (in this case none)
+    "480": { //Subkey 480 of HKCU/Software/Valve/Steam/Apps
+      "__values__": [ //Values of HKCU/Software/Valve/Steam/Apps/480
+      {"name": "Name","type": "SZ","data": "Spacewar"}, 
+      ... //etc
+      ]
+    },
+    "550": {
+      "__values__": [
+      {"name": "Installed","type": "DWORD","data": 0},
+      {"name": "Name","type": "SZ","data": "Left 4 Dead 2"},
+      ... //etc
+      ]
+    },
+    ... //etc
+  },
+  ... //etc
 }
 ```
 
-#### `regImportKey(root: string, key: string, data: obj, option?: obj): void`
+#### `regImportKey(root: string, key: string, data: object, option?: object): void`
 
 Import back to the registry a previously exported key (see RegExportKey).<br/>
 This overwrites existing data if any.
@@ -285,9 +283,17 @@ This overwrites existing data if any.
 Build cgo-dll
 =============
 
-GoLang 1.20 windows/amd64
+⚠️ CGO requires a cross compiling C compiler for the target architecture.
 
-⚠️ CGO requires a gcc compiler installed and added to your env PATH.<br />
-Recommended : https://jmeubank.github.io/tdm-gcc/download/
+- [GoLang](https://go.dev/) 1.21.4 windows/amd64
+- [Zig](https://ziglang.org/) 0.11.0 as the C cross compiler and it should be added to your environment variable `PATH`
 
-Run `lib/go/build.cmd` or `npm run-script build`
+Run `npm run-script build`
+
+Targets:
+  - Windows
+    + x86
+    + x64
+    + arm64
+
+Compiled DLLs can be found in the `./dist` folder.
