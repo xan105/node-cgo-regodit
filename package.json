@@ -27,7 +27,9 @@
     "test": "node --test test/",
     "check": "tsc --noemit --checkjs",
     "declare": "tsc --declaration --emitDeclarationOnly --outDir \"./types\"",
-    "build": "call src\\build.cmd"
+    "build:win": "powershell -NoProfile -ExecutionPolicy Bypass -File ./src/build.ps1",
+    "build:win:legacy": "call src\\build.cmd",
+    "build:linux": "sh src/build.sh"
   },
   "keywords": [
     "regedit",
@@ -68,7 +70,7 @@
   ],
   "dependencies": {
     "@xan105/error": "^1.6.2",
-    "@xan105/ffi": "^1.1.0",
+    "@xan105/ffi": "^1.1.2",
     "@xan105/is": "^2.9.3",
     "koffi": "^2.6.10"
   },

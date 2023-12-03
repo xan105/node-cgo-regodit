@@ -17,26 +17,22 @@ import (
 func GetHKEY(root string) registry.Key {
 
   var HKEY registry.Key
-    
-  if (root == "HKCR"){ 
-    HKEY = registry.CLASSES_ROOT
-  } else if (root == "HKCU") {
-    HKEY = registry.CURRENT_USER
-  }else if (root == "HKLM") {
-    HKEY = registry.LOCAL_MACHINE
-  }else if (root == "HKU") { 
-    HKEY = registry.USERS
-  }else if (root == "HKCC") { 
-    HKEY = registry.CURRENT_CONFIG
+
+  switch root {
+    case "HKCU": HKEY = registry.CURRENT_USER
+    case "HKLM": HKEY = registry.LOCAL_MACHINE
+    case "HKU": HKEY = registry.USERS
+    case "HKCC": HKEY = registry.CURRENT_CONFIG
+    case "HKCR": HKEY = registry.CLASSES_ROOT
   }
-    
+  
   return HKEY
 }
 
 //export RegKeyExists
 func RegKeyExists(root *C.char, key *C.char) C.uint {
 
-  var result int
+  var result uint
   HKEY := GetHKEY(C.GoString(root))
 
   k, err := registry.OpenKey(HKEY , C.GoString(key), registry.QUERY_VALUE)

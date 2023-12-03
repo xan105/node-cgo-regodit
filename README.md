@@ -1,10 +1,12 @@
 About
 =====
 
-Read/Write Windows Registry using FFI and GoLang (x86, x64 and arm64).
+Read/Write Windows Registry using FFI and GoLang (x86, x64 and arm64).<br />
 
-Originally created to demo that you can bind GoLang as a c-shared DLL (Go>=1.10) to Node via FFI.<br />
+Friendly API which takes care of the Windows' registry little annoyances.<br />
 Syntax is inspired from InnoSetup's Pascal Scripting Registry functions.
+
+Originally created to demonstrate that you can bind GoLang as a c-shared DLL to Node via FFI (Go>=1.10).
 
 Example
 =======
@@ -292,7 +294,10 @@ Build cgo-dll
 - [GoLang](https://go.dev/) 1.21.4 windows/amd64
 - [Zig](https://ziglang.org/) 0.11.0 as the C cross compiler and it should be added to your environment variable `PATH`
 
-Run `npm run-script build`
+Run:
+  - `npm run build:win` (win32/powershell)
+  - `npm run build:win:legacy` (win32/cmd)
+  - `npm run build:linux` (linux/bash)
 
 Targets:
   - Windows
