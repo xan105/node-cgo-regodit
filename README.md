@@ -178,6 +178,8 @@ NB: If the key has some subkeys then deletion will be aborted (Use RegDeleteKeyI
 
 Delete given key and all its subkeys.
 
+⚠️ The sync version could throw with `RangeError: Maximum call stack size exceeded` when used with a big tree; consider using the promise version in such case.
+
 #### `regListAllSubkeys(root: string, key: string): string[] | []`
 
 List all subkeys name for a given key (non-recursive).<br />

@@ -1,6 +1,6 @@
 {
   "name": "regodit",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Read/Write Windows Registry using FFI and GoLang (x86, x64 and arm64)",
   "type": "module",
   "exports": {
