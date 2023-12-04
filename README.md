@@ -131,7 +131,7 @@ Return `null` If the key/name doesn't exist.
 Return integer value of given key/name.
 
 NB: REG_QWORD is a 64-bit unsigned integer.<br />
-Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_objectects/Number/MAX_SAFE_INTEGER)
+Return a bigint instead of a number if integer value > [Number.MAX_SAFE_INTEGER](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)
 
 Return `null` If the key/name doesn't exist.
 
