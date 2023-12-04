@@ -4,7 +4,7 @@ import { isWindows } from "@xan105/is";
 import * as reg from "../lib/index.js";
 
 test("Read/write REG_SZ", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/string"];
@@ -41,7 +41,7 @@ test("Read/write REG_SZ", {
 });
 
 test("Read/write REG_MULTI_SZ", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/string"];
@@ -78,7 +78,7 @@ test("Read/write REG_MULTI_SZ", {
 });
 
 test("Read/write REG_EXPAND_SZ", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/string"];
@@ -115,7 +115,7 @@ test("Read/write REG_EXPAND_SZ", {
 });
 
 test("Read/write REG_BINARY", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/binary"];
@@ -147,7 +147,7 @@ test("Read/write REG_BINARY", {
 });
 
 test("Read/write REG_DWORD & REG_QWORD", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/number"];

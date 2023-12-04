@@ -29,7 +29,7 @@
     "declare": "tsc --declaration --emitDeclarationOnly --outDir \"./types\"",
     "build:win": "powershell -NoProfile -ExecutionPolicy Bypass -File ./src/build.ps1",
     "build:win:legacy": "call src\\build.cmd",
-    "build:linux": "sh src/build.sh"
+    "build:linux": "sh ./src/build.sh"
   },
   "keywords": [
     "regedit",

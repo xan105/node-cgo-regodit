@@ -4,9 +4,7 @@ import { userInfo } from "node:os";
 import { isWindows } from "@xan105/is";
 import * as reg from "../lib/index.js";
 
-test("Promises/Sync method count", {
-  skip: isWindows ? false : "This test runs on Windows"
-}, () => {
+test("Promises/Sync method count", () => {
 
   const promises = Object.keys(reg.promises).length;
   const sync = Object.keys(reg).length - 1;
@@ -14,8 +12,19 @@ test("Promises/Sync method count", {
   
 });
 
+test("Linux fail at runtime", {
+  skip: !isWindows() ? false : "This test runs on Linux"
+}, () => {
+  try{
+    reg.regKeyExists("HKCU", "Software");
+  }catch(err){
+    assert.ok(err.code === "ERR_FFI");
+    assert.ok(err.message.includes("cannot open shared object file"));
+  }
+});
+
 test("Creating and deleting a key", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/create"]
@@ -39,7 +48,7 @@ test("Creating and deleting a key", {
 });
 
 test("Read string expand env var", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
 
   const key = ["HKCU", "Software/Microsoft/Windows/CurrentVersion/Explorer/User Shell Folders", "AppData"];
@@ -58,7 +67,7 @@ test("Read string expand env var", {
 });
 
 test("List subkeys / values", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   const key = ["HKCU", "Software/regodit/listing"];
@@ -97,7 +106,7 @@ test("List subkeys / values", {
 
 
 test("Import/Export", {
-  skip: isWindows ? false : "This test runs on Windows"
+  skip: isWindows() ? false : "This test runs on Windows"
 }, async () => {
   
   await test("sync", () => {
