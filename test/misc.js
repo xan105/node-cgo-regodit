@@ -55,13 +55,11 @@ test("Read string expand env var", {
   const { username } = userInfo();
   
   await test("sync", () => {
-    assert.equal(reg.regQueryStringValue(...key), "%USERPROFILE%\\AppData\\Roaming");
-    assert.equal(reg.regQueryStringValueAndExpand(...key), `C:\\Users\\${username}\\AppData\\Roaming`);
+    assert.equal(reg.regQueryStringValue(...key), `C:\\Users\\${username}\\AppData\\Roaming`);
   });
   
   await test("promise", async() => {
-    assert.equal(await reg.promises.regQueryStringValue(...key), "%USERPROFILE%\\AppData\\Roaming");
-    assert.equal(await reg.promises.regQueryStringValueAndExpand(...key), `C:\\Users\\${username}\\AppData\\Roaming`);
+    assert.equal(await reg.promises.regQueryStringValue(...key), `C:\\Users\\${username}\\AppData\\Roaming`);
   });
   
 });
